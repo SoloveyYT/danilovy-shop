@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --color-cream: #faf8f5;
+  --color-ink: #1c1917;
+  --color-muted: #57534e;
+  --color-accent: #78716c;
+  --color-gold: #b8860b;
+  --color-silver-line: #d6d3d1;
+}
+
+/* Базовая типографика и фон в «ювелирном» стиле */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream text-ink antialiased min-h-screen;
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Ссылки */
+a.link-underline {
+  @apply underline decoration-silver-line underline-offset-4 hover:decoration-gold transition-colors;
+}
+
+/* Карточки */
+.card-jewel {
+  @apply rounded-sm border border-stone-200/80 bg-white/90 shadow-sm shadow-stone-200/40;
+}

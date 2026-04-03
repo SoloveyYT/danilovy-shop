@@ -1,0 +1,16 @@
+# Только PostgreSQL для локальной разработки
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: danilovy
+      POSTGRES_PASSWORD: danilovy_secret
+      POSTGRES_DB: danilovy_shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - danilovy_pg:/var/lib/postgresql/data
+
+volumes:
+  danilovy_pg:
