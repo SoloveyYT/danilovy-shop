@@ -85,9 +85,9 @@ sudo apt update
 sudo apt install -y git
 cd /var/www
 sudo mkdir -p danilovy-shop
-sudo chown $USER:$USER danilovy-shop
+sudo chown $USER:$USER /var/www/danilovy-shop
 cd danilovy-shop
-git clone https://github.com/ВАШ_ЛОГИН/danilovy-shop.git .
+git clone https://github.com/SoloveyYT/danilovy-shop.git .
 ls
 ```
 
@@ -302,6 +302,15 @@ sudo systemctl restart danilovy-shop
 4. Выполните только блок из **части 1.4**.
 
 Или забудьте про Git на ПК и пользуйтесь **частью 2Б** (ZIP + WinSCP).
+
+---
+
+## Часто: «Connection refused» на `http://IP:3000`
+
+1. **Сайт не запущен** — на сервере должно работать `npm start` или `systemctl status danilovy-shop`. Проверка с сервера: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000` (ожидается `200` или `307`).
+2. **Слушать на всех интерфейсах** — в `package.json` скрипт `start`: `next start -H 0.0.0.0 -p 3000` (чтобы был доступ не только с localhost).
+3. **Фаервол VPS** — открыть входящий TCP 3000 или проверять сайт через Nginx на портах 80/443 (тогда снаружи `:3000` можно не открывать).
+4. Сообщение про **squid** / **localhost** в ошибке — часто мешает **прокси** в браузере или сети. Отключите прокси для теста или откройте с телефона по мобильному интернету.
 
 ---
 
