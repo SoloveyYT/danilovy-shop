@@ -25,7 +25,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 422 });
   }
 
-  // eslint-disable-next-line no-console
   console.info("[contact]", parsed.data);
 
   return NextResponse.json({ ok: true });

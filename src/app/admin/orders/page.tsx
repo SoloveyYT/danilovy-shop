@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { formatRub } from "@/lib/money";
 
 type Order = {
@@ -36,12 +37,12 @@ export default function AdminOrdersPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-3xl font-semibold text-ink">Заказы</h1>
-        <a
+        <Link
           href="/api/admin/orders/export"
           className="rounded-sm border border-stone-400 px-4 py-2 text-sm font-semibold text-ink hover:bg-white"
         >
           Экспорт CSV
-        </a>
+        </Link>
       </div>
 
       <ul className="mt-8 space-y-6">

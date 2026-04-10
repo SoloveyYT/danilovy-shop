@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { formatRub } from "@/lib/money";
 import { SafeImage } from "@/components/SafeImage";
 import { CatalogAddToCart } from "@/components/CatalogAddToCart";
 
