@@ -33,7 +33,7 @@ export async function getPublicSettings(): Promise<PublicShopSettings> {
   });
   const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
 
-  let scheduleLines = [...DEFAULT_SCHEDULE];
+  let scheduleLines: string[] = [...DEFAULT_SCHEDULE];
   try {
     const parsed = JSON.parse(map[K.schedule] || "[]") as unknown;
     if (Array.isArray(parsed) && parsed.every((x) => typeof x === "string")) {
