@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# danilovy-shop
-=======
 # Ювелирная мастерская Даниловых — маркетплейс
 
 Многостраничный интернет-магазин на **Next.js 15 (App Router)**, **PostgreSQL**, **Prisma ORM**, аутентификация через **JWT** в httpOnly-cookie, оплата **ЮKassa (ЮMoney)**.
@@ -92,7 +89,7 @@ npm start
 
 Перед запуском задайте `NODE_ENV=production`, HTTPS, корректные секреты и URL вебхука ЮKassa в личном кабинете: `https://danilov-silver.ru/api/payments/webhook`.
 
-**Пошагово для начинающих (VPS, SSH, домен):** см. [DEPLOY-BEGINNER.md](./DEPLOY-BEGINNER.md).
+**Развёртывание на VPS с нуля (GitHub, SSH, домен, ЮKassa):** см. [DEPLOY-FROM-ZERO.md](./DEPLOY-FROM-ZERO.md).
 
 ## Безопасность
 
@@ -112,4 +109,3 @@ npm start
 ## Лицензия
 
 Проект создан для мастерской Даниловых.
->>>>>>> ad0147a (deploy)
