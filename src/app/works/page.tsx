@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Примеры работ",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function WorksPage() {
   const works = await prisma.workExample.findMany({
     where: { isPublished: true },

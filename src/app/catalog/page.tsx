@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Каталог серебра",
 };
 
+/** Иначе страница замирает на снимке БД с момента `npm run build` — новые фото/позиции не видны до пересборки */
+export const dynamic = "force-dynamic";
+
 export default async function CatalogPage() {
   const [items, categoryOptions] = await Promise.all([
     prisma.catalogItem.findMany({

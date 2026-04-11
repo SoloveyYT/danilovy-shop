@@ -7,6 +7,8 @@ import { BijouterieAddToCart } from "@/components/BijouterieAddToCart";
 
 type Props = { params: Promise<{ id: string }> };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { id } = await props.params;
   const item = await prisma.bijouterieItem.findFirst({ where: { id, isActive: true } });
