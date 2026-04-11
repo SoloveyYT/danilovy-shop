@@ -30,9 +30,10 @@ function parseJsonArray(raw: string): ParsedOpt[] {
 export async function priceCartLines(lines: CartLine[]): Promise<{
   subtotal: Decimal;
   items: {
-    type: "SERVICE" | "CATALOG";
+    type: "SERVICE" | "CATALOG" | "BIJOUTERIE";
     serviceId?: string;
     catalogItemId?: string;
+    bijouterieItemId?: string;
     title: string;
     quantity: number;
     unitPrice: Decimal;
@@ -41,9 +42,10 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
   }[];
 }> {
   const priced: {
-    type: "SERVICE" | "CATALOG";
+    type: "SERVICE" | "CATALOG" | "BIJOUTERIE";
     serviceId?: string;
     catalogItemId?: string;
+    bijouterieItemId?: string;
     title: string;
     quantity: number;
     unitPrice: Decimal;
@@ -108,6 +110,26 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
         unitPrice: unit,
         selectedSize: line.selectedSize,
         selectedStone: line.selectedStone,
+      });
+      continue;
+    }
+
+    if (line.type === "BIJOUTERIE" && line.bijouterieItemId) {
+      const b = await prisma.bijouterieItem.findFirst({
+        where: { id: line.bijouterieItemId, isActive: true },
+      });
+      if (!b) throw new Error(`Товар недоступен: ${line.bijouterieItemId}`);
+      if (b.stock < qty) throw new Error(`Недостаточно на складе: ${b.title}`);
+      const unit = new Decimal(b.price);
+      sub = sub.add(unit.mul(qty));
+      priced.push({
+        type: "BIJOUTERIE",
+        bijouterieItemId: b.id,
+        title: b.title,
+        quantity: qty,
+        unitPrice: unit,
+        selectedSize: undefined,
+        selectedStone: undefined,
       });
       continue;
     }

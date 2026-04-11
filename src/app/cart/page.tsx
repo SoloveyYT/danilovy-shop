@@ -34,6 +34,10 @@ export default function CartPage() {
           или{" "}
           <Link href="/catalog" className="link-underline">
             каталог серебра
+          </Link>{" "}
+          /{" "}
+          <Link href="/bijouterie" className="link-underline">
+            бижутерия
           </Link>
           .
         </p>
@@ -49,7 +53,9 @@ export default function CartPage() {
                       ? [l.selectedSize, l.selectedStone].filter(Boolean).join(" · ")
                       : l.type === "SERVICE"
                         ? "Услуга"
-                        : null}
+                        : l.type === "BIJOUTERIE"
+                          ? "Бижутерия"
+                          : null}
                   </p>
                   <p className="mt-2 text-sm">{formatRub(l.unitPrice)} × {l.quantity}</p>
                 </div>

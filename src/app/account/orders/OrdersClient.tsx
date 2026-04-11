@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { formatRub } from "@/lib/money";
+import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-labels";
 
 type OrderRow = {
   id: string;
@@ -12,13 +13,6 @@ type OrderRow = {
   paymentStatus: string;
   createdAt: string;
   deliveryMethod: string;
-};
-
-const statusRu: Record<string, string> = {
-  NEW: "Новый",
-  IN_PROGRESS: "В работе",
-  READY: "Готов",
-  ISSUED: "Выдан",
 };
 
 export function OrdersClient() {
@@ -75,10 +69,10 @@ export function OrdersClient() {
               <li key={o.id} className="card-jewel p-4">
                 <p className="text-xs text-muted">{new Date(o.createdAt).toLocaleString("ru-RU")}</p>
                 <p className="mt-1 text-sm">
-                  <span className="font-medium text-ink">Статус:</span> {statusRu[o.status] || o.status}
+                  <span className="font-medium text-ink">Статус:</span> {orderStatusLabel(o.status)}
                 </p>
                 <p className="text-sm">
-                  <span className="font-medium text-ink">Оплата:</span> {o.paymentStatus}
+                  <span className="font-medium text-ink">Оплата:</span> {paymentStatusLabel(o.paymentStatus)}
                 </p>
                 <p className="text-sm">
                   <span className="font-medium text-ink">Доставка:</span>{" "}
@@ -113,8 +107,8 @@ export function OrdersClient() {
               {orders.map((o) => (
                 <tr key={o.id} className="border-b border-stone-100">
                   <td className="py-3 pr-4">{new Date(o.createdAt).toLocaleString("ru-RU")}</td>
-                  <td className="py-3 pr-4">{statusRu[o.status] || o.status}</td>
-                  <td className="py-3 pr-4">{o.paymentStatus}</td>
+                  <td className="py-3 pr-4">{orderStatusLabel(o.status)}</td>
+                  <td className="py-3 pr-4">{paymentStatusLabel(o.paymentStatus)}</td>
                   <td className="py-3 pr-4">{o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"}</td>
                   <td className="py-3 pr-4 font-medium">{formatRub(o.total as number)}</td>
                   <td className="py-3">

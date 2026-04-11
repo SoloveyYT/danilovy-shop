@@ -3,7 +3,7 @@
 Одна логика: **сначала код на GitHub (или архивом), потом сервер**.  
 Чтобы не повторять ошибки с Git — в разделе 1 главное правило: **репозиторий на GitHub создаётся пустым** (без README).
 
-Домен в примерах: **danilov-silver.ru**. Подставьте свой IP и пароли.
+Домен в примерах: **danilovsilver.ru**. Подставьте свой IP и пароли.
 
 ---
 
@@ -152,7 +152,7 @@ nano .env
 ```env
 DATABASE_URL="postgresql://danilovy:ВАШ_ПАРОЛЬ_БД@localhost:5432/danilovy_shop?schema=public"
 JWT_SECRET="любая_длинная_случайная_строка_не_короче_32_символов"
-NEXT_PUBLIC_APP_URL="https://danilov-silver.ru"
+NEXT_PUBLIC_APP_URL="https://danilovsilver.ru"
 YOOKASSA_SHOP_ID=""
 YOOKASSA_SECRET_KEY=""
 ADMIN_EMAIL="ваш@email.ru"
@@ -231,7 +231,7 @@ sudo nano /etc/nginx/sites-available/danilovy
 ```nginx
 server {
     listen 80;
-    server_name danilov-silver.ru www.danilov-silver.ru;
+    server_name danilovsilver.ru www.danilovsilver.ru;
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -251,8 +251,8 @@ server {
 ```bash
 sudo ln -sf /etc/nginx/sites-available/danilovy /etc/nginx/sites-enabled/
 sudo nginx -t
-sudo systemctl reload nginx
-sudo certbot --nginx -d danilov-silver.ru -d www.danilov-silver.ru
+
+sudo certbot --nginx -d danilovsilver.ru -d www.danilovsilver.ru
 ```
 
 В REG.RU для домена должна быть запись **A** на IP сервера (см. часть 4).
@@ -275,21 +275,21 @@ sudo systemctl restart danilovy-shop
 
 ## Часть 4. Домен (кратко)
 
-В панели REG.RU у домена **danilov-silver.ru** добавьте записи **A**:
+В панели REG.RU у домена **danilovsilver.ru** добавьте записи **A**:
 
 - имя `@` (или корень) → IP сервера;
 - имя `www` → тот же IP.
 
-Проверка с ПК: `nslookup danilov-silver.ru` — должен показывать IP сервера.
+Проверка с ПК: `nslookup danilovsilver.ru` — должен показывать IP сервера.
 
 ---
 
 ## Часть 5. ЮKassa
 
-Когда сайт открывается по **https://danilov-silver.ru**:
+Когда сайт открывается по **https://danilovsilver.ru**:
 
 1. Ключи в личном кабинете ЮKassa → в `.env` (`YOOKASSA_SHOP_ID`, `YOOKASSA_SECRET_KEY`).
-2. Вебхук: `https://danilov-silver.ru/api/payments/webhook`
+2. Вебхук: `https://danilovsilver.ru/api/payments/webhook`
 3. Перезапуск: `sudo systemctl restart danilovy-shop` (и при смене публичного URL — `npm run build`, см. 3.7).
 
 ---

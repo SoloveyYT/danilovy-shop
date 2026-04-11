@@ -87,7 +87,7 @@ npm run build
 npm start
 ```
 
-Перед запуском задайте `NODE_ENV=production`, HTTPS, корректные секреты и URL вебхука ЮKassa в личном кабинете: `https://danilov-silver.ru/api/payments/webhook`.
+Перед запуском задайте `NODE_ENV=production`, HTTPS, корректные секреты и URL вебхука ЮKassa в личном кабинете: `https://danilovsilver.ru/api/payments/webhook`.
 
 **Развёртывание на VPS с нуля (GitHub, SSH, домен, ЮKassa):** см. [DEPLOY-FROM-ZERO.md](./DEPLOY-FROM-ZERO.md).
 

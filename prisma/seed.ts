@@ -5,8 +5,13 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { DEFAULT_ADDRESS, SHOP_NAME } from "../src/lib/constants";
 
 const prisma = new PrismaClient();
+
+const defaultYandexMapEmbedUrl = `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(
+  `${SHOP_NAME}, ${DEFAULT_ADDRESS}`,
+)}&z=16`;
 
 async function main() {
   const adminEmail = (process.env.ADMIN_EMAIL || "admin@danilovy.local").toLowerCase();
@@ -103,6 +108,7 @@ async function main() {
     {
       article: "SLV-R01",
       title: "Кольцо «Классика» из серебра 925",
+      category: "Кольца",
       basePrice: "5900",
       sizesJson: sizesRing,
       stonesJson: stones,
@@ -111,6 +117,7 @@ async function main() {
     {
       article: "SLV-P02",
       title: "Подвеска «Северное сияние»",
+      category: "Подвески",
       basePrice: "4200",
       sizesJson: "[]",
       stonesJson: JSON.stringify([
@@ -122,6 +129,7 @@ async function main() {
     {
       article: "SLV-B03",
       title: "Браслет панцирный",
+      category: "Браслеты",
       basePrice: "7800",
       sizesJson: JSON.stringify([
         { label: "16 см", modifier: "0" },
@@ -139,15 +147,18 @@ async function main() {
       create: {
         article: c.article,
         title: c.title,
+        category: "category" in c ? c.category : "",
         description: "Модель из каталога серебра 925 пробы. Уточните размер и камень при заказе.",
         basePrice: c.basePrice,
         sizesJson: c.sizesJson,
         stonesJson: c.stonesJson,
+        imageUrlsJson: "[]",
         sortOrder: c.sortOrder,
         isActive: true,
       },
       update: {
         title: c.title,
+        category: "category" in c ? c.category : "",
         basePrice: c.basePrice,
         sizesJson: c.sizesJson,
         stonesJson: c.stonesJson,
@@ -156,9 +167,89 @@ async function main() {
     });
   }
 
+  const workCount = await prisma.workExample.count();
+  if (workCount === 0) {
+    await prisma.workExample.createMany({
+      data: [
+        {
+          title: "Реставрация кольца",
+          description: "Восстановление оправы и закрепка камня.",
+          category: "Ремонт",
+          imageUrl: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800",
+          imageUrlsJson: JSON.stringify([
+            "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800",
+            "https://images.unsplash.com/photo-1610375461248-301e1c6e9214?w=800",
+          ]),
+          sortOrder: 1,
+          isPublished: true,
+        },
+        {
+          title: "Индивидуальный перстень",
+          description: "Изготовление по эскизу заказчика.",
+          category: "Изготовление",
+          imageUrl: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800",
+          imageUrlsJson: "[]",
+          sortOrder: 2,
+          isPublished: true,
+        },
+      ],
+    });
+  }
+
+  const bijCount = await prisma.bijouterieItem.count();
+  if (bijCount === 0) {
+    await prisma.bijouterieItem.createMany({
+      data: [
+        {
+          article: "BJ-001",
+          title: "Серьги с фианитами",
+          category: "Серьги",
+          description: "Демонстрационная позиция.",
+          price: "2900",
+          stock: 5,
+          imageUrl: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800",
+          imageUrlsJson: "[]",
+          sortOrder: 1,
+          isActive: true,
+        },
+        {
+          article: "BJ-002",
+          title: "Браслет «Классика»",
+          category: "Браслеты",
+          description: "Демонстрационная позиция.",
+          price: "1900",
+          stock: 12,
+          imageUrl: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800",
+          imageUrlsJson: "[]",
+          sortOrder: 2,
+          isActive: true,
+        },
+      ],
+    });
+  }
+
   await prisma.setting.upsert({
     where: { key: "courier_fee_rub" },
     create: { key: "courier_fee_rub", value: "500" },
+    update: {},
+  });
+
+  await prisma.setting.upsert({
+    where: { key: "jewelry_categories_json" },
+    create: {
+      key: "jewelry_categories_json",
+      value: JSON.stringify([
+        "Кольца",
+        "Серьги",
+        "Браслеты",
+        "Подвески",
+        "Цепи",
+        "Колье",
+        "Броши",
+        "Часы",
+        "Прочее",
+      ]),
+    },
     update: {},
   });
 
@@ -183,12 +274,10 @@ async function main() {
     where: { key: "yandex_map_embed_url" },
     create: {
       key: "yandex_map_embed_url",
-      value:
-        "https://yandex.ru/map-widget/v1/?text=%D0%B3.%20%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D1%83%D0%BB.%20%D0%91%D0%BE%D1%80%D0%B8%D1%81%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B5%20%D0%9F%D1%80%D1%83%D0%B4%D1%8B%2C%20%D0%B4.%2014%2C%20%D0%BA.%204&z=16",
+      value: defaultYandexMapEmbedUrl,
     },
     update: {
-      value:
-        "https://yandex.ru/map-widget/v1/?text=%D0%B3.%20%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D1%83%D0%BB.%20%D0%91%D0%BE%D1%80%D0%B8%D1%81%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B5%20%D0%9F%D1%80%D1%83%D0%B4%D1%8B%2C%20%D0%B4.%2014%2C%20%D0%BA.%204&z=16",
+      value: defaultYandexMapEmbedUrl,
     },
   });
 

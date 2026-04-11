@@ -6,20 +6,19 @@ import { requireAdminApi } from "../guard";
 export async function GET() {
   const g = await requireAdminApi();
   if ("error" in g) return g.error;
-  const list = await prisma.catalogItem.findMany({
+  const items = await prisma.bijouterieItem.findMany({
     orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
   });
-  return NextResponse.json({ items: list });
+  return NextResponse.json({ items });
 }
 
 const createSchema = z.object({
   article: z.string().min(1),
   title: z.string().min(1),
-  category: z.string().optional(),
   description: z.string().optional(),
-  basePrice: z.union([z.number(), z.string()]),
-  sizesJson: z.string().optional(),
-  stonesJson: z.string().optional(),
+  category: z.string().optional(),
+  price: z.union([z.number(), z.string()]),
+  stock: z.number().int().min(0).optional(),
   imageUrl: z.string().nullable().optional(),
   imageUrlsJson: z.string().optional(),
   sortOrder: z.number().optional(),
@@ -44,15 +43,14 @@ export async function POST(req: Request) {
 
   const d = parsed.data;
   try {
-    const item = await prisma.catalogItem.create({
+    const item = await prisma.bijouterieItem.create({
       data: {
         article: d.article.trim(),
         title: d.title.trim(),
-        category: (d.category ?? "").trim() || "",
         description: (d.description ?? "").trim(),
-        basePrice: String(d.basePrice),
-        sizesJson: d.sizesJson ?? "[]",
-        stonesJson: d.stonesJson ?? "[]",
+        category: (d.category ?? "").trim(),
+        price: String(d.price),
+        stock: d.stock ?? 0,
         imageUrl: d.imageUrl?.trim() || null,
         imageUrlsJson: d.imageUrlsJson ?? "[]",
         sortOrder: d.sortOrder ?? 0,

@@ -5,4 +5,5 @@ export const KEYS = [
   "shop_schedule_json",
   "courier_fee_rub",
   "yandex_map_embed_url",
+  "jewelry_categories_json",
 ] as const;

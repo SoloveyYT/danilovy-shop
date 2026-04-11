@@ -6,11 +6,10 @@ import { requireAdminApi } from "../../guard";
 const patchSchema = z.object({
   article: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
-  category: z.string().optional(),
   description: z.string().optional(),
-  basePrice: z.union([z.number(), z.string()]).optional(),
-  sizesJson: z.string().optional(),
-  stonesJson: z.string().optional(),
+  category: z.string().optional(),
+  price: z.union([z.number(), z.string()]).optional(),
+  stock: z.number().int().min(0).optional(),
   imageUrl: z.string().nullable().optional(),
   imageUrlsJson: z.string().optional(),
   sortOrder: z.number().optional(),
@@ -36,16 +35,15 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
   const d = parsed.data;
   try {
-    const item = await prisma.catalogItem.update({
+    const item = await prisma.bijouterieItem.update({
       where: { id },
       data: {
         ...(d.article !== undefined ? { article: d.article.trim() } : {}),
         ...(d.title !== undefined ? { title: d.title.trim() } : {}),
-        ...(d.category !== undefined ? { category: d.category.trim() } : {}),
         ...(d.description !== undefined ? { description: d.description.trim() } : {}),
-        ...(d.basePrice !== undefined ? { basePrice: String(d.basePrice) } : {}),
-        ...(d.sizesJson !== undefined ? { sizesJson: d.sizesJson } : {}),
-        ...(d.stonesJson !== undefined ? { stonesJson: d.stonesJson } : {}),
+        ...(d.category !== undefined ? { category: d.category.trim() } : {}),
+        ...(d.price !== undefined ? { price: String(d.price) } : {}),
+        ...(d.stock !== undefined ? { stock: d.stock } : {}),
         ...(d.imageUrl !== undefined ? { imageUrl: d.imageUrl?.trim() || null } : {}),
         ...(d.imageUrlsJson !== undefined ? { imageUrlsJson: d.imageUrlsJson } : {}),
         ...(d.sortOrder !== undefined ? { sortOrder: d.sortOrder } : {}),
@@ -62,6 +60,6 @@ export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string 
   const g = await requireAdminApi();
   if ("error" in g) return g.error;
   const { id } = await ctx.params;
-  await prisma.catalogItem.delete({ where: { id } }).catch(() => null);
+  await prisma.bijouterieItem.delete({ where: { id } }).catch(() => null);
   return NextResponse.json({ ok: true });
 }

@@ -1,9 +1,17 @@
 import Link from "next/link";
 import { getPublicSettings } from "@/lib/settings";
 import { SHOP_NAME } from "@/lib/constants";
+import { prisma } from "@/lib/prisma";
+import { getImageList } from "@/lib/image-list";
+import { SafeImage } from "@/components/SafeImage";
 
 export default async function HomePage() {
   const s = await getPublicSettings();
+  const workPreview = await prisma.workExample.findMany({
+    where: { isPublished: true },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    take: 3,
+  });
 
   return (
     <div>
@@ -27,13 +35,55 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/catalog"
-              className="rounded-sm border border-stone-400 px-6 py-3 text-sm font-semibold text-ink transition hover:border-ink"
+              className="rounded-sm border border-stone-400 px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent"
             >
               Каталог серебра
+            </Link>
+            <Link
+              href="/works"
+              className="rounded-sm border border-stone-400 px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent"
+            >
+              Примеры работ
             </Link>
           </div>
         </div>
       </section>
+
+      {workPreview.length > 0 && (
+        <section className="border-t border-stone-200/80 bg-white/80">
+          <div className="mx-auto max-w-6xl px-4 py-16 md:px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className="font-display text-3xl font-semibold text-ink">Примеры работ</h2>
+              <Link href="/works" className="text-sm font-medium text-accent hover:underline">
+                Все работы →
+              </Link>
+            </div>
+            <ul className="mt-10 grid gap-8 sm:grid-cols-3">
+              {workPreview.map((w) => {
+                const imgs = getImageList(w.imageUrlsJson, w.imageUrl);
+                const src = imgs[0];
+                return (
+                  <li key={w.id} className="card-jewel overflow-hidden">
+                    <div className="relative aspect-[4/3] bg-stone-100">
+                      {src ? (
+                        <SafeImage src={src} alt={w.title} fill className="object-cover" sizes="33vw" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-xs text-muted">Нет фото</div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <p className="font-display text-lg font-semibold text-ink">{w.title}</p>
+                      {w.description ? (
+                        <p className="mt-2 line-clamp-2 text-sm text-muted">{w.description}</p>
+                      ) : null}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-6xl px-4 py-16 md:px-6">
         <h2 className="font-display text-3xl font-semibold text-ink">Чем мы занимаемся</h2>

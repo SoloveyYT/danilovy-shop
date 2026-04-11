@@ -19,6 +19,7 @@ const patchSchema = z.object({
   shop_schedule_json: z.string().optional(),
   courier_fee_rub: z.string().optional(),
   yandex_map_embed_url: z.string().optional(),
+  jewelry_categories_json: z.string().optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -38,6 +39,20 @@ export async function PATCH(req: Request) {
   }
 
   const d = parsed.data;
+  if (d.jewelry_categories_json !== undefined) {
+    try {
+      const arr = JSON.parse(d.jewelry_categories_json) as unknown;
+      if (!Array.isArray(arr) || !arr.every((x) => typeof x === "string")) {
+        return NextResponse.json(
+          { error: "jewelry_categories_json: нужен JSON-массив строк" },
+          { status: 422 },
+        );
+      }
+    } catch {
+      return NextResponse.json({ error: "jewelry_categories_json: невалидный JSON" }, { status: 400 });
+    }
+  }
+
   const entries = Object.entries(d).filter(([, v]) => v !== undefined) as [string, string][];
 
   for (const [key, value] of entries) {

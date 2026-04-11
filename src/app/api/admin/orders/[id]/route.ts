@@ -38,3 +38,17 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
   return NextResponse.json({ order });
 }
+
+/** Удаление заказа (каскадно удалятся позиции) */
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const g = await requireAdminApi();
+  if ("error" in g) return g.error;
+
+  const { id } = await ctx.params;
+  try {
+    await prisma.order.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: "Не удалось удалить заказ" }, { status: 400 });
+  }
+}

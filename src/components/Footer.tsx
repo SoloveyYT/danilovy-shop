@@ -39,6 +39,16 @@ export async function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/bijouterie" className="text-muted hover:text-ink">
+                Бижутерия
+              </Link>
+            </li>
+            <li>
+              <Link href="/works" className="text-muted hover:text-ink">
+                Примеры работ
+              </Link>
+            </li>
+            <li>
               <Link href="/contacts" className="text-muted hover:text-ink">
                 Контакты и карта
               </Link>

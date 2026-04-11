@@ -3,7 +3,9 @@ import Link from "next/link";
 const links = [
   { href: "/admin", label: "Обзор" },
   { href: "/admin/services", label: "Услуги" },
-  { href: "/admin/catalog", label: "Каталог серебра" },
+  { href: "/admin/catalog", label: "Серебро" },
+  { href: "/admin/bijouterie", label: "Бижутерия" },
+  { href: "/admin/works", label: "Работы" },
   { href: "/admin/orders", label: "Заказы" },
   { href: "/admin/settings", label: "Настройки" },
 ];

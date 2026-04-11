@@ -3,20 +3,20 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getImageList } from "@/lib/image-list";
 import { ThumbGallery } from "@/components/ThumbGallery";
-import { CatalogAddToCart } from "@/components/CatalogAddToCart";
+import { BijouterieAddToCart } from "@/components/BijouterieAddToCart";
 
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { id } = await props.params;
-  const item = await prisma.catalogItem.findFirst({ where: { id, isActive: true } });
+  const item = await prisma.bijouterieItem.findFirst({ where: { id, isActive: true } });
   if (!item) return { title: "Не найдено" };
   return { title: item.title };
 }
 
-export default async function CatalogItemPage(props: Props) {
+export default async function BijouterieItemPage(props: Props) {
   const { id } = await props.params;
-  const item = await prisma.catalogItem.findFirst({ where: { id, isActive: true } });
+  const item = await prisma.bijouterieItem.findFirst({ where: { id, isActive: true } });
   if (!item) notFound();
 
   const images = getImageList(item.imageUrlsJson, item.imageUrl);
@@ -36,12 +36,11 @@ export default async function CatalogItemPage(props: Props) {
           ) : null}
 
           <div className="mt-8 border-t border-stone-200 pt-8">
-            <CatalogAddToCart
-              catalogItemId={item.id}
+            <BijouterieAddToCart
+              id={item.id}
               title={item.title}
-              basePrice={Number(item.basePrice)}
-              sizesJson={item.sizesJson}
-              stonesJson={item.stonesJson}
+              price={Number(item.price)}
+              stock={item.stock}
               imageUrl={item.imageUrl}
             />
           </div>

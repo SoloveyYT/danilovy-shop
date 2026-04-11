@@ -3,15 +3,15 @@
 @theme {
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
-  --color-cream: #faf8f5;
-  --color-ink: #1c1917;
-  --color-muted: #57534e;
-  --color-accent: #78716c;
-  --color-gold: #b8860b;
-  --color-silver-line: #d6d3d1;
+  /* Серый фон, синий акцент, чуть красного для выделения */
+  --color-cream: #f1f5f9;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-accent: #2563eb;
+  --color-gold: #e11d48;
+  --color-silver-line: #cbd5e1;
 }
 
-/* Базовая типографика и фон в «ювелирном» стиле */
 html {
   scroll-behavior: smooth;
 }
@@ -28,12 +28,10 @@ h3,
   font-family: var(--font-display);
 }
 
-/* Ссылки */
 a.link-underline {
-  @apply underline decoration-silver-line underline-offset-4 hover:decoration-gold transition-colors;
+  @apply underline decoration-silver-line underline-offset-4 transition-colors hover:decoration-gold hover:text-gold;
 }
 
-/* Карточки */
 .card-jewel {
-  @apply rounded-sm border border-stone-200/80 bg-white/90 shadow-sm shadow-stone-200/40;
+  @apply rounded-sm border border-slate-200/90 bg-white/95 shadow-sm shadow-slate-200/50;
 }

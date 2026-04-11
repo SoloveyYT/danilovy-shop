@@ -38,6 +38,16 @@ export default function AdminHomePage() {
               </Link>
             </li>
             <li>
+              <Link href="/admin/bijouterie" className="link-underline">
+                Бижутерия
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/works" className="link-underline">
+                Примеры работ
+              </Link>
+            </li>
+            <li>
               <Link href="/admin/settings" className="link-underline">
                 Контакты и график
               </Link>

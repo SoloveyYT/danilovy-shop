@@ -8,9 +8,10 @@ import type { CartLine } from "@/lib/cart-types";
 
 const lineSchema = z.object({
   key: z.string().optional(),
-  type: z.enum(["SERVICE", "CATALOG"]),
+  type: z.enum(["SERVICE", "CATALOG", "BIJOUTERIE"]),
   serviceId: z.string().optional(),
   catalogItemId: z.string().optional(),
+  bijouterieItemId: z.string().optional(),
   title: z.string(),
   unitPrice: z.number().optional(),
   quantity: z.number().int().min(1).max(99),
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
     type: l.type,
     serviceId: l.serviceId,
     catalogItemId: l.catalogItemId,
+    bijouterieItemId: l.bijouterieItemId,
     title: l.title,
     unitPrice: l.unitPrice ?? 0,
     quantity: l.quantity,
@@ -100,12 +102,20 @@ export async function POST(req: Request) {
     });
 
     for (const it of pricedItems) {
+      const itemType =
+        it.type === "SERVICE"
+          ? OrderItemType.SERVICE
+          : it.type === "CATALOG"
+            ? OrderItemType.CATALOG
+            : OrderItemType.BIJOUTERIE;
+
       await tx.orderItem.create({
         data: {
           orderId: o.id,
-          itemType: it.type === "SERVICE" ? OrderItemType.SERVICE : OrderItemType.CATALOG,
+          itemType,
           serviceId: it.serviceId ?? null,
           catalogItemId: it.catalogItemId ?? null,
+          bijouterieItemId: it.bijouterieItemId ?? null,
           title: it.title,
           quantity: it.quantity,
           unitPrice: it.unitPrice,
@@ -113,6 +123,13 @@ export async function POST(req: Request) {
           selectedStone: it.selectedStone ?? null,
         },
       });
+
+      if (it.type === "BIJOUTERIE" && it.bijouterieItemId) {
+        await tx.bijouterieItem.update({
+          where: { id: it.bijouterieItemId },
+          data: { stock: { decrement: it.quantity } },
+        });
+      }
     }
 
     return o;

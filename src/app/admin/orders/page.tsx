@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { formatRub } from "@/lib/money";
+import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-labels";
 
 type Order = {
   id: string;
@@ -61,7 +62,8 @@ export default function AdminOrdersPage() {
               <strong>{o.customerName}</strong> · {o.phone} · {o.email}
             </p>
             <p className="text-muted">
-              {o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"} · оплата: {o.paymentStatus}
+              {o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"} · оплата:{" "}
+              {paymentStatusLabel(o.paymentStatus)}
             </p>
             <ul className="mt-2 list-inside list-disc text-muted">
               {o.items.map((it) => (
@@ -71,8 +73,8 @@ export default function AdminOrdersPage() {
               ))}
             </ul>
             <p className="mt-2 font-semibold text-ink">{formatRub(o.total as number)}</p>
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <label className="text-xs text-muted">Статус:</label>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <label className="text-xs text-muted">Статус заказа:</label>
               <select
                 value={o.status}
                 onChange={async (e) => {
@@ -88,10 +90,22 @@ export default function AdminOrdersPage() {
               >
                 {statuses.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {orderStatusLabel(s)}
                   </option>
                 ))}
               </select>
+              <button
+                type="button"
+                className="text-sm text-red-700 hover:underline"
+                onClick={async () => {
+                  if (!confirm("Удалить заказ безвозвратно?")) return;
+                  const res = await fetch(`/api/admin/orders/${o.id}`, { method: "DELETE" });
+                  if (res.ok) load();
+                  else alert("Не удалось удалить");
+                }}
+              >
+                Удалить заказ
+              </button>
             </div>
           </li>
         ))}

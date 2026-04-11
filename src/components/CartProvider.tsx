@@ -53,13 +53,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addLine = useCallback((line: Omit<CartLine, "key"> & { key?: string }) => {
     const key =
       line.key ||
-      `${line.type}-${line.serviceId || line.catalogItemId}-${line.selectedSize || ""}-${line.selectedStone || ""}-${Date.now()}`;
+      `${line.type}-${line.serviceId || line.catalogItemId || line.bijouterieItemId || ""}-${line.selectedSize || ""}-${line.selectedStone || ""}-${Date.now()}`;
     setLines((prev) => {
       const idx = prev.findIndex(
         (p) =>
           p.type === line.type &&
           p.serviceId === line.serviceId &&
           p.catalogItemId === line.catalogItemId &&
+          p.bijouterieItemId === line.bijouterieItemId &&
           p.selectedSize === line.selectedSize &&
           p.selectedStone === line.selectedStone,
       );
