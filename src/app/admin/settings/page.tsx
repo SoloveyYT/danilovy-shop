@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { fetchAdmin } from "@/lib/admin-fetch";
 import { parseJewelryCategoriesJson } from "@/lib/product-categories";
 
 export default function AdminSettingsPage() {
@@ -9,7 +10,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/settings")
+    fetchAdmin("/api/admin/settings")
       .then((r) => r.json())
       .then((d) => {
         const m = d.settings || {};
@@ -30,7 +31,7 @@ export default function AdminSettingsPage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const cleaned = categories.map((c) => c.trim()).filter(Boolean);
-    const res = await fetch("/api/admin/settings", {
+    const res = await fetchAdmin("/api/admin/settings", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

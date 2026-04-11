@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchAdmin } from "@/lib/admin-fetch";
 
 export default function AdminHomePage() {
   const [n, setN] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/notifications")
+    fetchAdmin("/api/admin/notifications")
       .then((r) => r.json())
       .then((d) => setN(d.newOrders ?? 0))
       .catch(() => setN(0));

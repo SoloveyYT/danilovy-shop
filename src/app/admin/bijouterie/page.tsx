@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { fetchAdmin } from "@/lib/admin-fetch";
 import { formatRub } from "@/lib/money";
 import { CategorySelect } from "@/components/CategorySelect";
 
@@ -20,7 +21,7 @@ export default function AdminBijouteriePage() {
   const [list, setList] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const load = useCallback(() => {
-    fetch("/api/admin/bijouterie")
+    fetchAdmin("/api/admin/bijouterie")
       .then((r) => r.json())
       .then((d) => setList(d.items || []))
       .finally(() => setLoading(false));
@@ -76,7 +77,7 @@ export default function AdminBijouteriePage() {
     for (let i = 0; i < files.length; i++) {
       const fd = new FormData();
       fd.append("file", files[i]);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const res = await fetchAdmin("/api/admin/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (res.ok) next.push(data.url as string);
       else alert(data.error || "Ошибка");
@@ -101,7 +102,7 @@ export default function AdminBijouteriePage() {
     };
 
     if (editingId) {
-      const res = await fetch(`/api/admin/bijouterie/${editingId}`, {
+      const res = await fetchAdmin(`/api/admin/bijouterie/${editingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -113,7 +114,7 @@ export default function AdminBijouteriePage() {
       return;
     }
 
-    const res = await fetch("/api/admin/bijouterie", {
+    const res = await fetchAdmin("/api/admin/bijouterie", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -217,7 +218,7 @@ export default function AdminBijouteriePage() {
                     className="text-red-700 hover:underline"
                     onClick={async () => {
                       if (!confirm("Удалить?")) return;
-                      await fetch(`/api/admin/bijouterie/${s.id}`, { method: "DELETE" });
+                      await fetchAdmin(`/api/admin/bijouterie/${s.id}`, { method: "DELETE" });
                       load();
                     }}
                   >

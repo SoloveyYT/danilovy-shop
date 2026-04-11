@@ -24,6 +24,8 @@ export function SafeImage(props: {
         className={props.className}
         sizes={props.sizes}
         priority={props.priority}
+        /* загрузки в /uploads — без оптимизатора, чтобы не ловить кэш /_next/image на проде */
+        unoptimized={props.src.startsWith("/uploads/")}
       />
     );
   }

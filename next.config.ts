@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
+    /* Короче кэш оптимизатора для новых файлов с тем же путём при правках */
+    minimumCacheTTL: 0,
     /* Локальные /uploads и типовые CDN; при необходимости добавьте домен из БД */
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },

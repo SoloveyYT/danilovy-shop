@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { fetchAdmin } from "@/lib/admin-fetch";
 import { formatRub } from "@/lib/money";
 import { CategorySelect } from "@/components/CategorySelect";
 
@@ -62,7 +63,7 @@ export default function AdminCatalogPage() {
   const [list, setList] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const load = useCallback(() => {
-    fetch("/api/admin/catalog")
+    fetchAdmin("/api/admin/catalog")
       .then((r) => r.json())
       .then((d) => setList(d.items || []))
       .finally(() => setLoading(false));
@@ -130,7 +131,7 @@ export default function AdminCatalogPage() {
       const f = files[i];
       const fd = new FormData();
       fd.append("file", f);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const res = await fetchAdmin("/api/admin/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (res.ok) next.push(data.url as string);
       else alert(data.error || "Ошибка загрузки");
@@ -163,7 +164,7 @@ export default function AdminCatalogPage() {
     };
 
     if (editingId) {
-      const res = await fetch(`/api/admin/catalog/${editingId}`, {
+      const res = await fetchAdmin(`/api/admin/catalog/${editingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -175,7 +176,7 @@ export default function AdminCatalogPage() {
       return;
     }
 
-    const res = await fetch("/api/admin/catalog", {
+    const res = await fetchAdmin("/api/admin/catalog", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -371,7 +372,7 @@ export default function AdminCatalogPage() {
                     className="text-red-700 hover:underline"
                     onClick={async () => {
                       if (!confirm("Удалить?")) return;
-                      await fetch(`/api/admin/catalog/${s.id}`, { method: "DELETE" });
+                      await fetchAdmin(`/api/admin/catalog/${s.id}`, { method: "DELETE" });
                       load();
                     }}
                   >

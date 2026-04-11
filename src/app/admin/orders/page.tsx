@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { fetchAdmin } from "@/lib/admin-fetch";
 import { formatRub } from "@/lib/money";
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-labels";
 
@@ -25,7 +26,7 @@ const statuses = ["NEW", "IN_PROGRESS", "READY", "ISSUED"] as const;
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const load = useCallback(() => {
-    fetch("/api/admin/orders?markViewed=1")
+    fetchAdmin("/api/admin/orders?markViewed=1")
       .then((r) => r.json())
       .then((d) => setOrders(d.orders || []));
   }, []);
@@ -79,7 +80,7 @@ export default function AdminOrdersPage() {
                 value={o.status}
                 onChange={async (e) => {
                   const status = e.target.value;
-                  await fetch(`/api/admin/orders/${o.id}`, {
+                  await fetchAdmin(`/api/admin/orders/${o.id}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ status }),
@@ -99,7 +100,7 @@ export default function AdminOrdersPage() {
                 className="text-sm text-red-700 hover:underline"
                 onClick={async () => {
                   if (!confirm("Удалить заказ безвозвратно?")) return;
-                  const res = await fetch(`/api/admin/orders/${o.id}`, { method: "DELETE" });
+                  const res = await fetchAdmin(`/api/admin/orders/${o.id}`, { method: "DELETE" });
                   if (res.ok) load();
                   else alert("Не удалось удалить");
                 }}

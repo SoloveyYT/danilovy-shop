@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { fetchAdmin } from "@/lib/admin-fetch";
 import { formatRub } from "@/lib/money";
 
 type Service = {
@@ -18,7 +19,7 @@ export default function AdminServicesPage() {
   const [list, setList] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const load = useCallback(() => {
-    fetch("/api/admin/services")
+    fetchAdmin("/api/admin/services")
       .then((r) => r.json())
       .then((d) => setList(d.services || []))
       .finally(() => setLoading(false));
@@ -39,7 +40,7 @@ export default function AdminServicesPage() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch("/api/admin/services", {
+    const res = await fetchAdmin("/api/admin/services", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -132,7 +133,7 @@ export default function AdminServicesPage() {
                   className="text-red-700 hover:underline"
                   onClick={async () => {
                     if (!confirm("Удалить?")) return;
-                    await fetch(`/api/admin/services/${s.id}`, { method: "DELETE" });
+                    await fetchAdmin(`/api/admin/services/${s.id}`, { method: "DELETE" });
                     load();
                   }}
                 >
