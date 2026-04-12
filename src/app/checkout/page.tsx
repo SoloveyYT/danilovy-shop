@@ -5,7 +5,7 @@ import { formatRub } from "@/lib/money";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-type Shop = { courierFeeRub: number };
+type Shop = { courierFeeRub: number; phone: string };
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function CheckoutPage() {
   useEffect(() => {
     fetch("/api/shop")
       .then((r) => r.json())
-      .then(setShop)
-      .catch(() => setShop({ courierFeeRub: 500 }));
+      .then((d) => setShop({ courierFeeRub: d.courierFeeRub ?? 500, phone: d.phone ?? "" }))
+      .catch(() => setShop({ courierFeeRub: 500, phone: "" }));
   }, []);
 
   useEffect(() => {
@@ -79,22 +79,8 @@ export default function CheckoutPage() {
         setLoading(false);
         return;
       }
-      const orderId = data.orderId as string;
-
-      const payRes = await fetch("/api/payments/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
-      });
-      const payData = await payRes.json();
-      if (!payRes.ok) {
-        clear();
-        router.push(`/account/orders?order=${orderId}&pay=manual`);
-        return;
-      }
-      const url = payData.confirmationUrl as string;
       clear();
-      window.location.href = url;
+      router.push("/account/orders?placed=1");
     } catch {
       setErr("Ошибка сети");
     } finally {
@@ -114,7 +100,15 @@ export default function CheckoutPage() {
     <div className="mx-auto max-w-2xl px-4 py-10 md:px-6 md:py-16">
       <h1 className="font-display text-3xl font-semibold text-ink md:text-4xl">Оформление заказа</h1>
       <p className="mt-2 text-sm text-muted">
-        Оплата онлайн через ЮKassa. Если платёж не настроен, заказ будет создан без редиректа на оплату.
+        Оплата — наличными при получении или переводом по реквизитам после звонка мастерской. Телефон для связи:{" "}
+        {shop?.phone ? (
+          <a href={`tel:${shop.phone.replace(/\s/g, "")}`} className="font-medium text-ink underline">
+            {shop.phone}
+          </a>
+        ) : (
+          "см. раздел «Контакты»"
+        )}
+        .
       </p>
 
       <form onSubmit={submit} className="mt-8 space-y-6 md:mt-10">
@@ -221,7 +215,7 @@ export default function CheckoutPage() {
           disabled={loading}
           className="w-full rounded-sm bg-ink px-8 py-3 text-sm font-semibold text-cream disabled:opacity-60 sm:w-auto"
         >
-          {loading ? "Создание заказа…" : "Перейти к оплате"}
+          {loading ? "Отправка…" : "Оформить заказ"}
         </button>
       </form>
     </div>

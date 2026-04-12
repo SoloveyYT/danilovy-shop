@@ -18,13 +18,21 @@ type OrderRow = {
 export function OrdersClient() {
   const sp = useSearchParams();
   const [orders, setOrders] = useState<OrderRow[] | null>(null);
-  const [payMsg, setPayMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [shopPhone, setShopPhone] = useState<string | null>(null);
 
   useEffect(() => {
-    if (sp.get("payment") === "success") {
-      setPayMsg("Оплата прошла успешно (если средства списаны — статус обновится после уведомления банка).");
+    if (sp.get("placed") === "1") {
+      setMsg("Заказ принят. Мастерская свяжется с вами для согласования оплаты (наличные или перевод).");
     }
   }, [sp]);
+
+  useEffect(() => {
+    fetch("/api/shop")
+      .then((r) => r.json())
+      .then((d) => setShopPhone(typeof d.phone === "string" ? d.phone : null))
+      .catch(() => setShopPhone(null));
+  }, []);
 
   useEffect(() => {
     fetch("/api/orders")
@@ -33,24 +41,19 @@ export function OrdersClient() {
       .catch(() => setOrders([]));
   }, []);
 
-  async function pay(orderId: string) {
-    const res = await fetch("/api/payments/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId }),
-    });
-    const data = await res.json();
-    if (res.ok && data.confirmationUrl) {
-      window.location.href = data.confirmationUrl as string;
-      return;
-    }
-    alert(data.error || "Не удалось создать платёж. Проверьте настройки ЮKassa.");
-  }
-
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 md:px-6 md:py-16">
       <h1 className="font-display text-3xl font-semibold text-ink md:text-4xl">Мои заказы</h1>
-      {payMsg && <p className="mt-4 text-sm text-green-800">{payMsg}</p>}
+      {msg && <p className="mt-4 text-sm text-green-800">{msg}</p>}
+
+      {shopPhone ? (
+        <p className="mt-4 text-sm text-muted">
+          Вопросы по оплате:{" "}
+          <a href={`tel:${shopPhone.replace(/\s/g, "")}`} className="font-medium text-ink underline">
+            {shopPhone}
+          </a>
+        </p>
+      ) : null}
 
       {orders === null ? (
         <p className="mt-8 text-muted">Загрузка…</p>
@@ -79,53 +82,32 @@ export function OrdersClient() {
                   {o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"}
                 </p>
                 <p className="mt-2 text-lg font-semibold text-ink">{formatRub(o.total as number)}</p>
-                {o.paymentStatus === "PENDING" && (
-                  <button
-                    type="button"
-                    onClick={() => pay(o.id)}
-                    className="mt-3 rounded-sm border border-gold px-3 py-1.5 text-sm font-medium text-gold"
-                  >
-                    Оплатить
-                  </button>
-                )}
               </li>
             ))}
           </ul>
           <div className="mt-10 hidden overflow-x-auto md:block">
-          <table className="w-full min-w-[640px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-stone-200 text-muted">
-                <th className="py-2 pr-4">Дата</th>
-                <th className="py-2 pr-4">Статус</th>
-                <th className="py-2 pr-4">Оплата</th>
-                <th className="py-2 pr-4">Доставка</th>
-                <th className="py-2 pr-4">Сумма</th>
-                <th className="py-2" />
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((o) => (
-                <tr key={o.id} className="border-b border-stone-100">
-                  <td className="py-3 pr-4">{new Date(o.createdAt).toLocaleString("ru-RU")}</td>
-                  <td className="py-3 pr-4">{orderStatusLabel(o.status)}</td>
-                  <td className="py-3 pr-4">{paymentStatusLabel(o.paymentStatus)}</td>
-                  <td className="py-3 pr-4">{o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"}</td>
-                  <td className="py-3 pr-4 font-medium">{formatRub(o.total as number)}</td>
-                  <td className="py-3">
-                    {o.paymentStatus === "PENDING" && (
-                      <button
-                        type="button"
-                        onClick={() => pay(o.id)}
-                        className="text-sm font-medium text-gold hover:underline"
-                      >
-                        Оплатить
-                      </button>
-                    )}
-                  </td>
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-stone-200 text-muted">
+                  <th className="py-2 pr-4">Дата</th>
+                  <th className="py-2 pr-4">Статус</th>
+                  <th className="py-2 pr-4">Оплата</th>
+                  <th className="py-2 pr-4">Доставка</th>
+                  <th className="py-2 pr-4">Сумма</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {orders.map((o) => (
+                  <tr key={o.id} className="border-b border-stone-100">
+                    <td className="py-3 pr-4">{new Date(o.createdAt).toLocaleString("ru-RU")}</td>
+                    <td className="py-3 pr-4">{orderStatusLabel(o.status)}</td>
+                    <td className="py-3 pr-4">{paymentStatusLabel(o.paymentStatus)}</td>
+                    <td className="py-3 pr-4">{o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"}</td>
+                    <td className="py-3 pr-4 font-medium">{formatRub(o.total as number)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </>
       )}

@@ -8,7 +8,7 @@ export const ORDER_STATUS_RU: Record<string, string> = {
 };
 
 export const PAYMENT_STATUS_RU: Record<string, string> = {
-  PENDING: "Ожидает оплаты",
+  PENDING: "Оплата по согласованию",
   SUCCEEDED: "Оплачен",
   CANCELED: "Отменён",
 };

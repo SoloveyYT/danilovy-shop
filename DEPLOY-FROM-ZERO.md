@@ -153,8 +153,6 @@ nano .env
 DATABASE_URL="postgresql://danilovy:ВАШ_ПАРОЛЬ_БД@localhost:5432/danilovy_shop?schema=public"
 JWT_SECRET="любая_длинная_случайная_строка_не_короче_32_символов"
 NEXT_PUBLIC_APP_URL="https://danilovsilver.ru"
-YOOKASSA_SHOP_ID=""
-YOOKASSA_SECRET_KEY=""
 ADMIN_EMAIL="ваш@email.ru"
 ADMIN_PASSWORD="надежный_пароль_админа"
 ```
@@ -257,7 +255,7 @@ sudo certbot --nginx -d danilovsilver.ru -d www.danilovsilver.ru
 
 В REG.RU для домена должна быть запись **A** на IP сервера (см. часть 4).
 
-### 3.7. После смены `.env` (например, ключи ЮKassa)
+### 3.7. После смены `.env`
 
 ```bash
 sudo systemctl restart danilovy-shop
@@ -281,16 +279,6 @@ sudo systemctl restart danilovy-shop
 - имя `www` → тот же IP.
 
 Проверка с ПК: `nslookup danilovsilver.ru` — должен показывать IP сервера.
-
----
-
-## Часть 5. ЮKassa
-
-Когда сайт открывается по **https://danilovsilver.ru**:
-
-1. Ключи в личном кабинете ЮKassa → в `.env` (`YOOKASSA_SHOP_ID`, `YOOKASSA_SECRET_KEY`).
-2. Вебхук: `https://danilovsilver.ru/api/payments/webhook`
-3. Перезапуск: `sudo systemctl restart danilovy-shop` (и при смене публичного URL — `npm run build`, см. 3.7).
 
 ---
 
