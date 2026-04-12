@@ -22,6 +22,7 @@ type Order = {
 };
 
 const statuses = ["NEW", "IN_PROGRESS", "READY", "ISSUED"] as const;
+const paymentStatuses = ["PENDING", "SUCCEEDED", "CANCELED"] as const;
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -62,10 +63,7 @@ export default function AdminOrdersPage() {
             <p className="mt-2">
               <strong>{o.customerName}</strong> · {o.phone} · {o.email}
             </p>
-            <p className="text-muted">
-              {o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"} · оплата:{" "}
-              {paymentStatusLabel(o.paymentStatus)}
-            </p>
+            <p className="text-muted">{o.deliveryMethod === "PICKUP" ? "Самовывоз" : "Курьер"}</p>
             <ul className="mt-2 list-inside list-disc text-muted">
               {o.items.map((it) => (
                 <li key={it.title + it.quantity}>
@@ -74,27 +72,51 @@ export default function AdminOrdersPage() {
               ))}
             </ul>
             <p className="mt-2 font-semibold text-ink">{formatRub(o.total as number)}</p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <label className="text-xs text-muted">Статус заказа:</label>
-              <select
-                value={o.status}
-                onChange={async (e) => {
-                  const status = e.target.value;
-                  await fetchAdmin(`/api/admin/orders/${o.id}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status }),
-                  });
-                  load();
-                }}
-                className="rounded-sm border border-stone-300 px-2 py-1 text-sm"
-              >
-                {statuses.map((s) => (
-                  <option key={s} value={s}>
-                    {orderStatusLabel(s)}
-                  </option>
-                ))}
-              </select>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs text-muted">Статус заказа:</label>
+                <select
+                  value={o.status}
+                  onChange={async (e) => {
+                    const status = e.target.value;
+                    await fetchAdmin(`/api/admin/orders/${o.id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ status }),
+                    });
+                    load();
+                  }}
+                  className="rounded-sm border border-stone-300 px-2 py-1 text-sm"
+                >
+                  {statuses.map((s) => (
+                    <option key={s} value={s}>
+                      {orderStatusLabel(s)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs text-muted">Оплата:</label>
+                <select
+                  value={o.paymentStatus}
+                  onChange={async (e) => {
+                    const paymentStatus = e.target.value;
+                    await fetchAdmin(`/api/admin/orders/${o.id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ paymentStatus }),
+                    });
+                    load();
+                  }}
+                  className="rounded-sm border border-stone-300 px-2 py-1 text-sm"
+                >
+                  {paymentStatuses.map((p) => (
+                    <option key={p} value={p}>
+                      {paymentStatusLabel(p)}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <button
                 type="button"
                 className="text-sm text-red-700 hover:underline"

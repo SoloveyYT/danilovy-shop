@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminApi } from "../../guard";
 
 const patchSchema = z.object({
   status: z.nativeEnum(OrderStatus).optional(),
+  paymentStatus: z.nativeEnum(PaymentStatus).optional(),
   viewedByAdmin: z.boolean().optional(),
 });
 
@@ -31,6 +32,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     where: { id },
     data: {
       ...(d.status !== undefined ? { status: d.status } : {}),
+      ...(d.paymentStatus !== undefined ? { paymentStatus: d.paymentStatus } : {}),
       ...(d.viewedByAdmin !== undefined ? { viewedByAdmin: d.viewedByAdmin } : {}),
     },
     include: { items: true, user: { select: { email: true, fullName: true } } },
