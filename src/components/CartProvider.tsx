@@ -45,6 +45,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setReady(true);
   }, []);
 
+  /** Старые записи в localStorage: не больше maxStock */
+  useEffect(() => {
+    if (!ready) return;
+    setLines((prev) => {
+      let changed = false;
+      const next = prev.map((l) => {
+        if (l.type === "BIJOUTERIE" && l.maxStock != null && l.quantity > l.maxStock) {
+          changed = true;
+          return { ...l, quantity: l.maxStock };
+        }
+        return l;
+      });
+      return changed ? next : prev;
+    });
+  }, [ready]);
+
   useEffect(() => {
     if (!ready) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
@@ -54,6 +70,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const key =
       line.key ||
       `${line.type}-${line.serviceId || line.catalogItemId || line.bijouterieItemId || ""}-${line.selectedSize || ""}-${line.selectedStone || ""}-${Date.now()}`;
+    const capQty = (q: number, max: number | undefined) =>
+      Math.max(1, Math.min(max ?? 99, Math.floor(q)));
+
     setLines((prev) => {
       const idx = prev.findIndex(
         (p) =>
@@ -66,10 +85,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       );
       if (idx >= 0) {
         const next = [...prev];
-        next[idx] = { ...next[idx], quantity: next[idx].quantity + line.quantity };
+        const max =
+          line.type === "BIJOUTERIE" && line.maxStock != null
+            ? line.maxStock
+            : next[idx].maxStock;
+        const mergedQty = capQty(next[idx].quantity + line.quantity, max);
+        next[idx] = {
+          ...next[idx],
+          quantity: mergedQty,
+          maxStock: line.type === "BIJOUTERIE" ? (line.maxStock ?? next[idx].maxStock) : next[idx].maxStock,
+        };
         return next;
       }
-      return [...prev, { ...line, key } as CartLine];
+      const initialQty = capQty(line.quantity, line.type === "BIJOUTERIE" ? line.maxStock : undefined);
+      return [...prev, { ...line, key, quantity: initialQty } as CartLine];
     });
   }, []);
 
@@ -78,8 +107,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateQty = useCallback((key: string, qty: number) => {
-    const q = Math.max(1, Math.min(99, Math.floor(qty)));
-    setLines((prev) => prev.map((l) => (l.key === key ? { ...l, quantity: q } : l)));
+    setLines((prev) =>
+      prev.map((l) => {
+        if (l.key !== key) return l;
+        const max = l.type === "BIJOUTERIE" && l.maxStock != null ? l.maxStock : 99;
+        const q = Math.max(1, Math.min(max, Math.floor(qty)));
+        return { ...l, quantity: q };
+      }),
+    );
   }, []);
 
   const clear = useCallback(() => setLines([]), []);

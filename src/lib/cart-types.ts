@@ -15,4 +15,6 @@ export type CartLine = {
   selectedSize?: string;
   selectedStone?: string;
   imageUrl?: string | null;
+  /** Для BIJOUTERIE: макс. штук по остатку на складе (с клиента; сервер всё равно проверяет) */
+  maxStock?: number;
 };

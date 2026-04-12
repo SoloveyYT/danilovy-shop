@@ -63,7 +63,7 @@ export default function CartPage() {
                   <input
                     type="number"
                     min={1}
-                    max={99}
+                    max={l.type === "BIJOUTERIE" && l.maxStock != null ? l.maxStock : 99}
                     value={l.quantity}
                     onChange={(e) => updateQty(l.key, Number(e.target.value))}
                     className="w-16 rounded-sm border border-stone-300 px-2 py-1 text-sm"
