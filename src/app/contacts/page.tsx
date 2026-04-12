@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SHOP_NAME } from "@/lib/constants";
 import { getPublicSettings } from "@/lib/settings";
 import { ContactForm } from "@/components/ContactForm";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 
 export default async function ContactsPage() {
   const s = await getPublicSettings();
+  const yandexMapsOpenUrl = `https://yandex.ru/maps/?text=${encodeURIComponent(`${SHOP_NAME}, ${s.address}`)}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 md:px-6">
@@ -36,7 +38,7 @@ export default async function ContactsPage() {
           </div>
           <div className="mt-8">
             <h2 className="font-display text-xl font-semibold text-ink">Как добраться</h2>
-            <div className="mt-4 aspect-video w-full overflow-hidden rounded-sm border border-stone-200">
+            <div className="mt-4 aspect-video w-full overflow-hidden rounded-sm border border-stone-200 bg-stone-100">
               <iframe
                 title="Карта — Ювелирная мастерская Даниловых"
                 src={s.yandexMapEmbedUrl}
@@ -44,10 +46,24 @@ export default async function ContactsPage() {
                 height="100%"
                 className="h-full min-h-[280px] w-full border-0"
                 allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-            <p className="mt-2 text-xs text-muted">
-              Карта Яндекса. При необходимости замените embed-URL в админ-панели (настройки мастерской).
+            <p className="mt-3 text-sm">
+              <a
+                href={yandexMapsOpenUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-accent underline underline-offset-2 hover:no-underline"
+              >
+                Открыть карту в Яндекс.Картах в новой вкладке
+              </a>
+            </p>
+            <p className="mt-2 text-xs text-muted leading-relaxed">
+              Если окно карты чёрное или пишет «сайт заблокирован» (код ERR_BLOCKED_BY_RESPONSE), чаще всего мешают
+              блокировщик рекламы (AdGuard, uBlock и т.п.) или настройки сети/VPN. Отключите блокировку для этого сайта
+              или пользуйтесь ссылкой выше. Embed-URL виджета можно заменить в админке: Настройки мастерской.
             </p>
           </div>
         </div>
