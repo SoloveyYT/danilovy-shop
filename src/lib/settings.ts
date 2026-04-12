@@ -33,6 +33,21 @@ function getDefaultYandexMapUrl(address: string): string {
   return `https://yandex.ru/map-widget/v1/?text=${text}&z=16`;
 }
 
+/**
+ * В админке часто вставляют URL без https:// — тогда iframe грузит путь на СВОЁМ домене (/yandex.ru/...) и даёт 404.
+ */
+function normalizeYandexMapEmbedUrl(raw: string | undefined, addressForFallback: string): string {
+  const fallback = getDefaultYandexMapUrl(addressForFallback);
+  const t = raw?.trim() ?? "";
+  if (!t) return fallback;
+  if (/^https:\/\//i.test(t)) return t;
+  if (/^http:\/\//i.test(t)) return t.replace(/^http:/i, "https:");
+  if (t.startsWith("//")) return `https:${t}`;
+  // только путь на текущем сайте — не внешний embed
+  if (t.startsWith("/")) return fallback;
+  return `https://${t.replace(/^\/+/, "")}`;
+}
+
 export async function getPublicSettings(): Promise<PublicShopSettings> {
   const rows = await prisma.setting.findMany({
     where: { key: { in: Object.values(K) } },
@@ -57,8 +72,10 @@ export async function getPublicSettings(): Promise<PublicShopSettings> {
     phone: map[K.phone]?.trim() || DEFAULT_PHONE,
     scheduleLines,
     courierFeeRub,
-    yandexMapEmbedUrl:
-      map[K.yandexMap]?.trim() || getDefaultYandexMapUrl(map[K.address]?.trim() || DEFAULT_ADDRESS),
+    yandexMapEmbedUrl: normalizeYandexMapEmbedUrl(
+      map[K.yandexMap],
+      map[K.address]?.trim() || DEFAULT_ADDRESS,
+    ),
     jewelryCategories: parseJewelryCategoriesJson(map[K.jewelryCategories]),
   };
 }

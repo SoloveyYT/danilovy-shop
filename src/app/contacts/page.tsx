@@ -47,7 +47,6 @@ export default async function ContactsPage() {
                 className="h-full min-h-[280px] w-full border-0"
                 allowFullScreen
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
             <p className="mt-3 text-sm">
@@ -61,9 +60,10 @@ export default async function ContactsPage() {
               </a>
             </p>
             <p className="mt-2 text-xs text-muted leading-relaxed">
-              Если окно карты чёрное или пишет «сайт заблокирован» (код ERR_BLOCKED_BY_RESPONSE), чаще всего мешают
-              блокировщик рекламы (AdGuard, uBlock и т.п.) или настройки сети/VPN. Отключите блокировку для этого сайта
-              или пользуйтесь ссылкой выше. Embed-URL виджета можно заменить в админке: Настройки мастерской.
+              Если внутри рамки открывается ваш сайт с ошибкой 404 — в настройках мастерской в поле карты должен быть
+              полный адрес, начиная с <span className="font-mono">https://</span> (скопируйте из Яндекса целиком).
+              Если окно чёрное или «сайт заблокирован» — чаще мешают блокировщики рекламы; можно открыть карту по ссылке
+              ниже.
             </p>
           </div>
         </div>
