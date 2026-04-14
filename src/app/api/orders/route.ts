@@ -17,6 +17,7 @@ const lineSchema = z.object({
   quantity: z.number().int().min(1).max(99),
   selectedSize: z.string().optional(),
   selectedStone: z.string().optional(),
+  selectedMaterial: z.enum(["SILVER", "GOLD"]).optional(),
   imageUrl: z.string().nullable().optional(),
 });
 
@@ -63,6 +64,7 @@ export async function POST(req: Request) {
     quantity: l.quantity,
     selectedSize: l.selectedSize,
     selectedStone: l.selectedStone,
+    selectedMaterial: l.selectedMaterial,
     imageUrl: l.imageUrl ?? undefined,
   }));
 
@@ -121,6 +123,7 @@ export async function POST(req: Request) {
           unitPrice: it.unitPrice,
           selectedSize: it.selectedSize ?? null,
           selectedStone: it.selectedStone ?? null,
+          selectedMaterial: it.selectedMaterial ?? null,
         },
       });
 

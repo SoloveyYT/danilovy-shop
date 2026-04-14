@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
-import { formatRub } from "@/lib/money";
+import { cartHasGoldCatalog, cartSubtotalRub, formatRub } from "@/lib/money";
 import { useEffect, useMemo, useState } from "react";
 
 export default function CartPage() {
@@ -16,10 +16,8 @@ export default function CartPage() {
       .catch(() => setUser(null));
   }, []);
 
-  const subtotal = useMemo(
-    () => lines.reduce((a, l) => a + l.unitPrice * l.quantity, 0),
-    [lines],
-  );
+  const subtotal = useMemo(() => cartSubtotalRub(lines), [lines]);
+  const hasGoldCatalog = useMemo(() => cartHasGoldCatalog(lines), [lines]);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-16">
@@ -33,7 +31,7 @@ export default function CartPage() {
           </Link>{" "}
           или{" "}
           <Link href="/catalog" className="link-underline">
-            каталог серебра
+            каталог
           </Link>{" "}
           /{" "}
           <Link href="/bijouterie" className="link-underline">
@@ -49,15 +47,27 @@ export default function CartPage() {
                 <div>
                   <p className="font-medium text-ink">{l.title}</p>
                   <p className="text-sm text-muted">
-                    {l.type === "CATALOG" && (l.selectedSize || l.selectedStone)
-                      ? [l.selectedSize, l.selectedStone].filter(Boolean).join(" · ")
-                      : l.type === "SERVICE"
-                        ? "Услуга"
-                        : l.type === "BIJOUTERIE"
-                          ? "Бижутерия"
-                          : null}
+                    {l.type === "CATALOG" ? (
+                      <>
+                        {l.selectedMaterial === "GOLD" ? "Золото (по договорённости)" : "Серебро"}
+                        {(l.selectedSize || l.selectedStone) &&
+                          ` · ${[l.selectedSize, l.selectedStone].filter(Boolean).join(" · ")}`}
+                      </>
+                    ) : l.type === "SERVICE" ? (
+                      "Услуга"
+                    ) : l.type === "BIJOUTERIE" ? (
+                      "Бижутерия"
+                    ) : null}
                   </p>
-                  <p className="mt-2 text-sm">{formatRub(l.unitPrice)} × {l.quantity}</p>
+                  <p className="mt-2 text-sm">
+                    {l.type === "CATALOG" && l.selectedMaterial === "GOLD" ? (
+                      <>по договорённости{l.quantity > 1 ? ` × ${l.quantity}` : ""}</>
+                    ) : (
+                      <>
+                        {formatRub(l.unitPrice)} × {l.quantity}
+                      </>
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3 self-start sm:self-auto">
                   <input
@@ -84,6 +94,11 @@ export default function CartPage() {
             <div>
               <p className="text-sm text-muted">Промежуточный итог</p>
               <p className="text-2xl font-semibold text-ink">{formatRub(subtotal)}</p>
+              {hasGoldCatalog ? (
+                <p className="mt-1 text-xs text-muted">
+                  Позиции из золота в сумму не входят — стоимость согласуется отдельно.
+                </p>
+              ) : null}
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <button type="button" onClick={() => clear()} className="text-sm text-muted hover:text-ink">

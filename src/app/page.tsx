@@ -37,7 +37,7 @@ export default async function HomePage() {
               href="/catalog"
               className="rounded-sm border border-stone-400 px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent"
             >
-              Каталог серебра
+              Каталог
             </Link>
             <Link
               href="/works"
@@ -98,8 +98,8 @@ export default async function HomePage() {
               text: "Индивидуальные заказы, переплавка вашего металла, работа по фото и эскизам.",
             },
             {
-              title: "Серебро",
-              text: "Готовые модели с выбором размера и вставок — удобный каталог на сайте.",
+              title: "Каталог",
+              text: "Готовые модели из серебра или золота: серебро с фиксированной ценой, золото — по договорённости.",
             },
           ].map((b) => (
             <div key={b.title} className="card-jewel p-6">

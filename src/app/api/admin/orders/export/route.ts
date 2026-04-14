@@ -39,7 +39,7 @@ export async function GET() {
     const itemsStr = o.items
       .map(
         (i) =>
-          `${i.title} x${i.quantity} @${i.unitPrice}${i.selectedSize ? ` size:${i.selectedSize}` : ""}${i.selectedStone ? ` stone:${i.selectedStone}` : ""}`,
+          `${i.title} x${i.quantity} @${i.unitPrice}${i.selectedSize ? ` size:${i.selectedSize}` : ""}${i.selectedStone ? ` stone:${i.selectedStone}` : ""}${i.selectedMaterial ? ` material:${i.selectedMaterial}` : ""}`,
       )
       .join("; ");
     const row = [

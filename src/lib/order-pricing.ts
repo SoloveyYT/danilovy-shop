@@ -39,6 +39,7 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
     unitPrice: Decimal;
     selectedSize?: string;
     selectedStone?: string;
+    selectedMaterial?: "SILVER" | "GOLD";
   }[];
 }> {
   const priced: {
@@ -51,6 +52,7 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
     unitPrice: Decimal;
     selectedSize?: string;
     selectedStone?: string;
+    selectedMaterial?: "SILVER" | "GOLD";
   }[] = [];
 
   let sub = new Decimal(0);
@@ -73,6 +75,7 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
         unitPrice: unit,
         selectedSize: undefined,
         selectedStone: undefined,
+        selectedMaterial: undefined,
       });
       continue;
     }
@@ -83,6 +86,8 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
       });
       if (!c) throw new Error(`Товар недоступен: ${line.catalogItemId}`);
 
+      const material: "SILVER" | "GOLD" = line.selectedMaterial === "GOLD" ? "GOLD" : "SILVER";
+
       const sizes = parseJsonArray(c.sizesJson);
       const stones = parseJsonArray(c.stonesJson);
 
@@ -91,25 +96,30 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
         if (!line.selectedSize) throw new Error("Выберите размер");
         const m = sizes.find((x) => x.label === line.selectedSize);
         if (!m) throw new Error("Неверный размер");
-        extra = extra.add(new Decimal(m.modifier));
+        if (material === "SILVER") extra = extra.add(new Decimal(m.modifier));
       }
       if (stones.length > 0) {
         if (!line.selectedStone) throw new Error("Выберите камень");
         const m = stones.find((x) => x.name === line.selectedStone);
         if (!m) throw new Error("Неверный камень");
-        extra = extra.add(new Decimal(m.modifier));
+        if (material === "SILVER") extra = extra.add(new Decimal(m.modifier));
       }
 
-      const unit = new Decimal(c.basePrice).add(extra);
+      const unit =
+        material === "GOLD" ? new Decimal(0) : new Decimal(c.basePrice).add(extra);
+      const title =
+        material === "GOLD" ? `${c.title} — золото (по договорённости)` : c.title;
+
       sub = sub.add(unit.mul(qty));
       priced.push({
         type: "CATALOG",
         catalogItemId: c.id,
-        title: c.title,
+        title,
         quantity: qty,
         unitPrice: unit,
         selectedSize: line.selectedSize,
         selectedStone: line.selectedStone,
+        selectedMaterial: material,
       });
       continue;
     }
@@ -130,6 +140,7 @@ export async function priceCartLines(lines: CartLine[]): Promise<{
         unitPrice: unit,
         selectedSize: undefined,
         selectedStone: undefined,
+        selectedMaterial: undefined,
       });
       continue;
     }

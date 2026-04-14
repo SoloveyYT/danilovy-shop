@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: `%s — ${SHOP_NAME}`,
   },
   description:
-    "Ремонт и изготовление ювелирных изделий в Москве. Лазерная пайка, закрепка камней, каталог серебра.",
+    "Ремонт и изготовление ювелирных изделий в Москве. Лазерная пайка, закрепка камней, каталог изделий (серебро и золото).",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

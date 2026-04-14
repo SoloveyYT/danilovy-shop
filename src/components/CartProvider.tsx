@@ -12,6 +12,10 @@ import type { CartLine } from "@/lib/cart-types";
 
 const STORAGE_KEY = "danilovy_cart_v1";
 
+function catalogMaterialKey(m: CartLine["selectedMaterial"] | undefined) {
+  return m === "GOLD" ? "GOLD" : "SILVER";
+}
+
 type CartContextValue = {
   lines: CartLine[];
   addLine: (line: Omit<CartLine, "key"> & { key?: string }) => void;
@@ -69,7 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addLine = useCallback((line: Omit<CartLine, "key"> & { key?: string }) => {
     const key =
       line.key ||
-      `${line.type}-${line.serviceId || line.catalogItemId || line.bijouterieItemId || ""}-${line.selectedSize || ""}-${line.selectedStone || ""}-${Date.now()}`;
+      `${line.type}-${line.serviceId || line.catalogItemId || line.bijouterieItemId || ""}-${line.selectedSize || ""}-${line.selectedStone || ""}-${catalogMaterialKey(line.selectedMaterial)}-${Date.now()}`;
     const capQty = (q: number, max: number | undefined) =>
       Math.max(1, Math.min(max ?? 99, Math.floor(q)));
 
@@ -81,7 +85,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           p.catalogItemId === line.catalogItemId &&
           p.bijouterieItemId === line.bijouterieItemId &&
           p.selectedSize === line.selectedSize &&
-          p.selectedStone === line.selectedStone,
+          p.selectedStone === line.selectedStone &&
+          catalogMaterialKey(p.selectedMaterial) === catalogMaterialKey(line.selectedMaterial),
       );
       if (idx >= 0) {
         const next = [...prev];

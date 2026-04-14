@@ -1,5 +1,5 @@
 /**
- * Начальное наполнение БД: администратор, услуги, примеры каталога серебра, настройки.
+ * Начальное наполнение БД: администратор, услуги, примеры каталога изделий, настройки.
  * Запуск: npm run db:seed
  */
 import "dotenv/config";
@@ -131,7 +131,7 @@ async function main() {
       title: "Изготовление изделий из серебра по каталогам",
       price: "8000",
       sortOrder: 220,
-      description: "Выбор модели, размера и камней — см. раздел «Каталог серебра».",
+      description: "Выбор модели, размера и камней — см. раздел «Каталог».",
       category: "Изготовление",
     },
   ];
@@ -173,7 +173,7 @@ async function main() {
   const catalog = [
     {
       article: "SLV-R01",
-      title: "Кольцо «Классика» из серебра 925",
+      title: "Кольцо «Классика» из серебра",
       category: "Кольца",
       basePrice: "5900",
       sizesJson: sizesRing,
@@ -214,7 +214,7 @@ async function main() {
         article: c.article,
         title: c.title,
         category: "category" in c ? c.category : "",
-        description: "Модель из каталога серебра 925 пробы. Уточните размер и камень при заказе.",
+        description: "Модель из каталога: серебро или золото по договорённости. Уточните размер и камень при заказе.",
         basePrice: c.basePrice,
         sizesJson: c.sizesJson,
         stonesJson: c.stonesJson,

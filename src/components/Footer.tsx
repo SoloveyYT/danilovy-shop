@@ -35,7 +35,7 @@ export async function Footer() {
             </li>
             <li>
               <Link href="/catalog" className="text-muted hover:text-ink">
-                Каталог серебра
+                Каталог
               </Link>
             </li>
             <li>

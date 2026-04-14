@@ -104,7 +104,7 @@ export default function AdminSettingsPage() {
           <div className="border-t border-stone-200 pt-6">
             <h2 className="text-sm font-semibold text-ink">Категории изделий</h2>
             <p className="mt-1 text-xs text-muted">
-              Список для каталога серебра, бижутерии и примеров работ. Порядок строк совпадает с порядком в
+              Список для каталога, бижутерии и примеров работ. Порядок строк совпадает с порядком в
               выпадающих списках.
             </p>
             <ul className="mt-4 space-y-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/components/CartProvider";
-import { formatRub } from "@/lib/money";
+import { cartHasGoldCatalog, cartSubtotalRub, formatRub } from "@/lib/money";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -39,10 +39,8 @@ export default function CheckoutPage() {
       .catch(() => {});
   }, []);
 
-  const subtotal = useMemo(
-    () => lines.reduce((a, l) => a + l.unitPrice * l.quantity, 0),
-    [lines],
-  );
+  const subtotal = useMemo(() => cartSubtotalRub(lines), [lines]);
+  const hasGoldCatalog = useMemo(() => cartHasGoldCatalog(lines), [lines]);
 
   const courierFee = delivery === "COURIER" ? (shop?.courierFeeRub ?? 500) : 0;
   const total = subtotal + courierFee;
@@ -204,7 +202,12 @@ export default function CheckoutPage() {
 
         <div className="rounded-sm border border-stone-200 bg-white/80 p-4 text-sm">
           <p>Товары: {formatRub(subtotal)}</p>
-          <p>Доставка: {delivery === "PICKUP" ? "бесплатно" : formatRub(courierFee)}</p>
+          {hasGoldCatalog ? (
+            <p className="mt-1 text-xs text-muted">
+              Изделия из золота: стоимость по договорённости (не включена в сумму выше).
+            </p>
+          ) : null}
+          <p className="mt-2">Доставка: {delivery === "PICKUP" ? "бесплатно" : formatRub(courierFee)}</p>
           <p className="mt-2 text-lg font-semibold text-ink">К оплате: {formatRub(total)}</p>
         </div>
 

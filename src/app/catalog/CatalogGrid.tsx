@@ -75,7 +75,10 @@ export function CatalogGrid({ items, categoryOptions }: { items: Item[]; categor
                   ) : null}
                   <p className="text-xs uppercase tracking-wider text-gold">арт. {item.article}</p>
                   <h2 className="font-display mt-1 text-lg font-semibold text-ink">{item.title}</h2>
-                  <p className="mt-3 text-sm font-medium text-ink">от {formatRub(item.basePrice as number)}</p>
+                  <p className="mt-3 text-sm font-medium text-ink">
+                    от {formatRub(item.basePrice as number)} — серебро
+                  </p>
+                  <p className="mt-1 text-xs text-muted">Золото — по договорённости</p>
                 </div>
               </Link>
             </li>

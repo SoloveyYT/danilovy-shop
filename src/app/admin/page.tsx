@@ -35,7 +35,7 @@ export default function AdminHomePage() {
             </li>
             <li>
               <Link href="/admin/catalog" className="link-underline">
-                Каталог серебра
+                Каталог
               </Link>
             </li>
             <li>

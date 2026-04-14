@@ -9,7 +9,7 @@ import { useCart } from "./CartProvider";
 const nav = [
   { href: "/", label: "Главная" },
   { href: "/services", label: "Услуги" },
-  { href: "/catalog", label: "Серебро" },
+  { href: "/catalog", label: "Каталог" },
   { href: "/bijouterie", label: "Бижутерия" },
   { href: "/works", label: "Работы" },
   { href: "/about", label: "О нас" },

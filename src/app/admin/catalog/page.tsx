@@ -189,7 +189,7 @@ export default function AdminCatalogPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-semibold text-ink">Каталог серебра</h1>
+      <h1 className="font-display text-3xl font-semibold text-ink">Каталог</h1>
       <p className="mt-2 text-sm text-muted">
         Размеры и камни: добавляйте строки кнопкой «+». Фото: можно выбрать несколько файлов сразу.
       </p>
