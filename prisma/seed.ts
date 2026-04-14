@@ -33,28 +33,90 @@ async function main() {
   });
 
   const services = [
-    { article: "REP-001", title: "Лазерная пайка цепи, браслета, кольца", price: "1500", sortOrder: 10 },
-    { article: "REP-002", title: "Наращивание протертых деталей", price: "2000", sortOrder: 20 },
-    { article: "REP-003", title: "Увеличение/уменьшение размера кольца", price: "1200", sortOrder: 30 },
-    { article: "REP-004", title: "Ремонт замков у серёжек", price: "900", sortOrder: 40 },
-    { article: "REP-005", title: "Подбор и закрепка камня", price: "2500", sortOrder: 50 },
-    { article: "REP-006", title: "Ремонт/замена замка", price: "1100", sortOrder: 60 },
-    { article: "REP-007", title: "Покрытие позолотой или родием", price: "3500", sortOrder: 70 },
-    { article: "REP-008", title: "Чистка и полировка до зеркального блеска", price: "800", sortOrder: 80 },
+    {
+      article: "REP-001",
+      title: "Лазерная пайка цепи, браслета, кольца",
+      price: "1500",
+      sortOrder: 10,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-002",
+      title: "Наращивание протертых деталей",
+      price: "2000",
+      sortOrder: 20,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-003",
+      title: "Увеличение/уменьшение размера кольца",
+      price: "1200",
+      sortOrder: 30,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-004",
+      title: "Ремонт замков у серёжек",
+      price: "900",
+      sortOrder: 40,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-005",
+      title: "Подбор и закрепка камня",
+      price: "2500",
+      sortOrder: 50,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-006",
+      title: "Ремонт/замена замка",
+      price: "1100",
+      sortOrder: 60,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-007",
+      title: "Покрытие позолотой или родием",
+      price: "3500",
+      sortOrder: 70,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-008",
+      title: "Чистка и полировка до зеркального блеска",
+      price: "800",
+      sortOrder: 80,
+      category: "Ремонт",
+    },
     {
       article: "REP-009",
       title: "Перебор на новую нить браслетов и бус с установкой замка",
       price: "1400",
       sortOrder: 90,
+      category: "Ремонт",
     },
-    { article: "REP-010", title: "Ремонт бижутерии", price: "700", sortOrder: 100 },
-    { article: "REP-011", title: "Запайка оправы очков", price: "600", sortOrder: 110 },
+    {
+      article: "REP-010",
+      title: "Ремонт бижутерии",
+      price: "700",
+      sortOrder: 100,
+      category: "Ремонт",
+    },
+    {
+      article: "REP-011",
+      title: "Запайка оправы очков",
+      price: "600",
+      sortOrder: 110,
+      category: "Ремонт",
+    },
     {
       article: "MFG-001",
       title: "Изготовление ювелирного изделия любой сложности (оценка по эскизу)",
       price: "50000",
       sortOrder: 200,
       description: "Индивидуальный расчёт сроков и стоимости после согласования эскиза.",
+      category: "Изготовление",
     },
     {
       article: "MFG-002",
@@ -62,6 +124,7 @@ async function main() {
       price: "30000",
       sortOrder: 210,
       description: "По каталогу, фото или эскизу. Стоимость ориентировочная — уточняется на приёме.",
+      category: "Изготовление",
     },
     {
       article: "MFG-003",
@@ -69,6 +132,7 @@ async function main() {
       price: "8000",
       sortOrder: 220,
       description: "Выбор модели, размера и камней — см. раздел «Каталог серебра».",
+      category: "Изготовление",
     },
   ];
 
@@ -78,6 +142,7 @@ async function main() {
       create: {
         article: s.article,
         title: s.title,
+        category: "category" in s ? s.category : "",
         description: "description" in s ? s.description : "",
         price: s.price,
         sortOrder: s.sortOrder,
@@ -85,6 +150,7 @@ async function main() {
       },
       update: {
         title: s.title,
+        category: "category" in s ? s.category : "",
         description: "description" in s ? s.description : "",
         price: s.price,
         sortOrder: s.sortOrder,

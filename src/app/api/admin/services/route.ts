@@ -15,6 +15,7 @@ export async function GET() {
 const createSchema = z.object({
   article: z.string().min(1),
   title: z.string().min(1),
+  category: z.string().optional(),
   description: z.string().optional(),
   price: z.union([z.number(), z.string()]),
   imageUrl: z.string().nullable().optional(),
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
       data: {
         article: d.article.trim(),
         title: d.title.trim(),
+        category: (d.category ?? "").trim(),
         description: (d.description ?? "").trim(),
         price: String(d.price),
         imageUrl: d.imageUrl?.trim() || null,

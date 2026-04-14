@@ -6,6 +6,7 @@ import { requireAdminApi } from "../../guard";
 const patchSchema = z.object({
   article: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
+  category: z.string().optional(),
   description: z.string().optional(),
   price: z.union([z.number(), z.string()]).optional(),
   imageUrl: z.string().nullable().optional(),
@@ -37,6 +38,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       data: {
         ...(d.article !== undefined ? { article: d.article.trim() } : {}),
         ...(d.title !== undefined ? { title: d.title.trim() } : {}),
+        ...(d.category !== undefined ? { category: d.category.trim() } : {}),
         ...(d.description !== undefined ? { description: d.description.trim() } : {}),
         ...(d.price !== undefined ? { price: String(d.price) } : {}),
         ...(d.imageUrl !== undefined ? { imageUrl: d.imageUrl?.trim() || null } : {}),
