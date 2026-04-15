@@ -40,6 +40,12 @@ export default function AdminSettingsPage() {
         shop_schedule_json: map.shop_schedule_json,
         courier_fee_rub: map.courier_fee_rub,
         yandex_map_embed_url: map.yandex_map_embed_url,
+        social_telegram_url: map.social_telegram_url,
+        social_max_url: map.social_max_url,
+        social_vk_url: map.social_vk_url,
+        personal_max_url: map.personal_max_url,
+        personal_telegram: map.personal_telegram,
+        personal_phone_backup: map.personal_phone_backup,
         jewelry_categories_json: JSON.stringify(cleaned.length ? cleaned : []),
       }),
     });
@@ -74,6 +80,79 @@ export default function AdminSettingsPage() {
               className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 text-sm"
             />
           </div>
+
+          <div className="border-t border-stone-200 pt-6">
+            <h2 className="text-sm font-semibold text-ink">Паблики мастерской в соцсетях</h2>
+            <p className="mt-1 text-xs text-muted">
+              Telegram, MAX и ВКонтакте — показываются на странице «Контакты» и в подвале сайта.
+            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium">Telegram (паблик)</label>
+                <input
+                  value={map.social_telegram_url || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, social_telegram_url: e.target.value }))}
+                  placeholder="https://t.me/..."
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 font-mono text-xs"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">MAX (сообщество / приглашение)</label>
+                <input
+                  value={map.social_max_url || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, social_max_url: e.target.value }))}
+                  placeholder="https://max.ru/join/..."
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 font-mono text-xs"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">ВКонтакте</label>
+                <input
+                  value={map.social_vk_url || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, social_vk_url: e.target.value }))}
+                  placeholder="https://vk.com/... или https://vk.ru/..."
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 font-mono text-xs"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-stone-200 pt-6">
+            <h2 className="text-sm font-semibold text-ink">Личные контакты (Макс, Telegram, запасной телефон)</h2>
+            <p className="mt-1 text-xs text-muted">
+              Показываются на странице «Контакты» и в подвале. Ссылку MAX можно оставить по умолчанию из кода.
+            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium">MAX — ссылка-приглашение</label>
+                <input
+                  value={map.personal_max_url || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, personal_max_url: e.target.value }))}
+                  placeholder="https://max.ru/u/..."
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 font-mono text-xs"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Telegram</label>
+                <input
+                  value={map.personal_telegram || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, personal_telegram: e.target.value }))}
+                  placeholder="@username или https://t.me/..."
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Запасной телефон (личный)</label>
+                <input
+                  value={map.personal_phone_backup || ""}
+                  onChange={(e) => setMap((m) => ({ ...m, personal_phone_backup: e.target.value }))}
+                  placeholder="+7 …"
+                  className="mt-1 w-full rounded-sm border border-stone-300 px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium">График (JSON-массив строк)</label>
             <textarea

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SHOP_NAME } from "@/lib/constants";
-import { getPublicSettings } from "@/lib/settings";
+import { externalHref, getPublicSettings, telegramHref } from "@/lib/settings";
 import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = {
@@ -21,6 +21,48 @@ export default async function ContactsPage() {
       <div className="mt-12 grid gap-12 lg:grid-cols-2">
         <div>
           <div className="card-jewel p-6">
+            <h2 className="font-display text-xl font-semibold text-ink">Мы в соцсетях</h2>
+            <p className="mt-3 text-sm text-muted leading-relaxed">
+              Паблики и сообщества ювелирной мастерской — новости, работы, контакты.
+            </p>
+            <ul className="mt-5 space-y-3 text-sm">
+              <li>
+                <a
+                  href={telegramHref(s.socialTelegramUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent underline underline-offset-2 hover:no-underline"
+                >
+                  Telegram
+                </a>
+                <span className="text-muted"> — канал мастерской</span>
+              </li>
+              <li>
+                <a
+                  href={externalHref(s.socialMaxUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent underline underline-offset-2 hover:no-underline"
+                >
+                  MAX
+                </a>
+                <span className="text-muted"> — сообщество</span>
+              </li>
+              <li>
+                <a
+                  href={externalHref(s.socialVkUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent underline underline-offset-2 hover:no-underline"
+                >
+                  ВКонтакте
+                </a>
+                <span className="text-muted"> — группа</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="card-jewel mt-8 p-6">
             <h2 className="font-display text-xl font-semibold text-ink">Адрес</h2>
             <p className="mt-3 text-muted">{s.address}</p>
             <h2 className="font-display mt-8 text-xl font-semibold text-ink">Телефон</h2>
@@ -36,6 +78,57 @@ export default async function ContactsPage() {
               ))}
             </ul>
           </div>
+
+          <div className="card-jewel mt-8 p-6">
+            <h2 className="font-display text-xl font-semibold text-ink">Личные контакты</h2>
+            <p className="mt-3 text-sm text-muted leading-relaxed">
+              Напрямую в мессенджерах или по запасному номеру — если основной телефон мастерской временно
+              недоступен.
+            </p>
+            <ul className="mt-5 space-y-5 text-sm">
+              <li>
+                <p className="font-medium text-ink">Мессенджер MAX</p>
+                <p className="mt-1 text-muted">
+                  Я пользуюсь мессенджером MAX. Присоединяйся!
+                </p>
+                <a
+                  href={s.personalMaxUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block font-medium text-accent underline underline-offset-2 hover:no-underline"
+                >
+                  Открыть профиль в MAX
+                </a>
+              </li>
+              {s.personalTelegram ? (
+                <li>
+                  <p className="font-medium text-ink">Telegram</p>
+                  <a
+                    href={telegramHref(s.personalTelegram)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block font-medium text-accent underline underline-offset-2 hover:no-underline"
+                  >
+                    {/^https?:\/\//i.test(s.personalTelegram.trim())
+                      ? "Написать в Telegram"
+                      : s.personalTelegram}
+                  </a>
+                </li>
+              ) : null}
+              {s.personalPhoneBackup ? (
+                <li>
+                  <p className="font-medium text-ink">Телефон (запасной)</p>
+                  <a
+                    href={`tel:${s.personalPhoneBackup.replace(/\s/g, "")}`}
+                    className="mt-1 block text-lg font-medium text-ink link-underline"
+                  >
+                    {s.personalPhoneBackup}
+                  </a>
+                </li>
+              ) : null}
+            </ul>
+          </div>
+
           <div className="mt-8">
             <h2 className="font-display text-xl font-semibold text-ink">Как добраться</h2>
             <div className="mt-4 aspect-video w-full overflow-hidden rounded-sm border border-stone-200 bg-stone-100">

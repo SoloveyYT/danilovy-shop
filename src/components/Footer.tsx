@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPublicSettings } from "@/lib/settings";
+import { externalHref, getPublicSettings, telegramHref } from "@/lib/settings";
 import { SHOP_NAME } from "@/lib/constants";
 
 export async function Footer() {
@@ -16,6 +16,62 @@ export async function Footer() {
               {s.phone}
             </a>
           </p>
+          <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted">Соцсети</p>
+          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
+            <a
+              href={telegramHref(s.socialTelegramUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline hover:text-ink"
+            >
+              Telegram
+            </a>
+            <a
+              href={externalHref(s.socialMaxUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline hover:text-ink"
+            >
+              MAX
+            </a>
+            <a
+              href={externalHref(s.socialVkUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline hover:text-ink"
+            >
+              ВКонтакте
+            </a>
+          </div>
+          <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted">Личные</p>
+          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
+            <a
+              href={s.personalMaxUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline hover:text-ink"
+            >
+              MAX (личн.)
+            </a>
+            {s.personalTelegram ? (
+              <a
+                href={telegramHref(s.personalTelegram)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline hover:text-ink"
+              >
+                Telegram
+              </a>
+            ) : null}
+            {s.personalPhoneBackup ? (
+              <a
+                href={`tel:${s.personalPhoneBackup.replace(/\s/g, "")}`}
+                className="link-underline hover:text-ink"
+              >
+                Запасной: {s.personalPhoneBackup}
+              </a>
+            ) : null}
+          </div>
         </div>
         <div>
           <p className="text-sm font-semibold text-ink">График</p>

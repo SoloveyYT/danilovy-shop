@@ -20,6 +20,12 @@ const patchSchema = z.object({
   courier_fee_rub: z.string().optional(),
   yandex_map_embed_url: z.string().optional(),
   jewelry_categories_json: z.string().optional(),
+  social_telegram_url: z.string().optional(),
+  social_max_url: z.string().optional(),
+  social_vk_url: z.string().optional(),
+  personal_max_url: z.string().optional(),
+  personal_telegram: z.string().optional(),
+  personal_phone_backup: z.string().optional(),
 });
 
 export async function PATCH(req: Request) {

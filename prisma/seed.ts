@@ -5,7 +5,14 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { DEFAULT_ADDRESS, SHOP_NAME } from "../src/lib/constants";
+import {
+  DEFAULT_ADDRESS,
+  DEFAULT_PERSONAL_MAX_URL,
+  DEFAULT_SOCIAL_MAX_URL,
+  DEFAULT_SOCIAL_TELEGRAM_URL,
+  DEFAULT_SOCIAL_VK_URL,
+  SHOP_NAME,
+} from "../src/lib/constants";
 
 const prisma = new PrismaClient();
 
@@ -345,6 +352,28 @@ async function main() {
     update: {
       value: defaultYandexMapEmbedUrl,
     },
+  });
+
+  await prisma.setting.upsert({
+    where: { key: "social_telegram_url" },
+    create: { key: "social_telegram_url", value: DEFAULT_SOCIAL_TELEGRAM_URL },
+    update: {},
+  });
+  await prisma.setting.upsert({
+    where: { key: "social_max_url" },
+    create: { key: "social_max_url", value: DEFAULT_SOCIAL_MAX_URL },
+    update: {},
+  });
+  await prisma.setting.upsert({
+    where: { key: "social_vk_url" },
+    create: { key: "social_vk_url", value: DEFAULT_SOCIAL_VK_URL },
+    update: {},
+  });
+
+  await prisma.setting.upsert({
+    where: { key: "personal_max_url" },
+    create: { key: "personal_max_url", value: DEFAULT_PERSONAL_MAX_URL },
+    update: {},
   });
 
   // eslint-disable-next-line no-console
