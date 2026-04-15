@@ -15,18 +15,30 @@ export const DEFAULT_JEWELRY_CATEGORIES = [
   "Прочее",
 ] as const;
 
+const REQUIRED_JEWELRY_CATEGORIES = ["Обручальные кольца"] as const;
+
+function withRequiredCategories(categories: string[]): string[] {
+  const out = [...categories];
+  for (const required of REQUIRED_JEWELRY_CATEGORIES) {
+    if (!out.some((c) => c.toLowerCase() === required.toLowerCase())) {
+      out.push(required);
+    }
+  }
+  return out;
+}
+
 export function parseJewelryCategoriesJson(raw: string | null | undefined): string[] {
-  if (!raw?.trim()) return [...DEFAULT_JEWELRY_CATEGORIES];
+  if (!raw?.trim()) return withRequiredCategories([...DEFAULT_JEWELRY_CATEGORIES]);
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (Array.isArray(parsed) && parsed.every((x) => typeof x === "string")) {
       const cleaned = parsed.map((s) => String(s).trim()).filter(Boolean);
-      if (cleaned.length > 0) return cleaned;
+      if (cleaned.length > 0) return withRequiredCategories(cleaned);
     }
   } catch {
     /* use default */
   }
-  return [...DEFAULT_JEWELRY_CATEGORIES];
+  return withRequiredCategories([...DEFAULT_JEWELRY_CATEGORIES]);
 }
 
 /** Кнопки фильтра: «Все», затем категории из настроек, затем любые лишние из товаров (старые данные). */
