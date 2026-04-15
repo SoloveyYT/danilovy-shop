@@ -4,6 +4,7 @@
  */
 export const DEFAULT_JEWELRY_CATEGORIES = [
   "Кольца",
+  "Обручальные кольца",
   "Серьги",
   "Браслеты",
   "Подвески",

@@ -313,6 +313,7 @@ async function main() {
       key: "jewelry_categories_json",
       value: JSON.stringify([
         "Кольца",
+        "Обручальные кольца",
         "Серьги",
         "Браслеты",
         "Подвески",
