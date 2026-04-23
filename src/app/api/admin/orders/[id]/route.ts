@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../../guard";
 
 const patchSchema = z.object({
@@ -49,6 +50,7 @@ export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string 
   const { id } = await ctx.params;
   try {
     await prisma.order.delete({ where: { id } });
+    await writeAdminLog(g.user, "order.delete", { orderId: id });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Не удалось удалить заказ" }, { status: 400 });

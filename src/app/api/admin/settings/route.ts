@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../guard";
 import { KEYS } from "@/lib/settings-keys";
 
@@ -61,6 +62,7 @@ export async function PATCH(req: Request) {
 
   const entries = Object.entries(d).filter(([, v]) => v !== undefined) as [string, string][];
 
+  const savedKeys: string[] = [];
   for (const [key, value] of entries) {
     if (!KEYS.includes(key as (typeof KEYS)[number])) continue;
     await prisma.setting.upsert({
@@ -68,7 +70,10 @@ export async function PATCH(req: Request) {
       create: { key, value },
       update: { value },
     });
+    savedKeys.push(key);
   }
+
+  await writeAdminLog(g.user, "settings.update", { keys: savedKeys });
 
   const rows = await prisma.setting.findMany();
   const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));

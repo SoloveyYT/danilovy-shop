@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../../guard";
 
 const patchSchema = z.object({
@@ -50,6 +51,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
         ...(d.isActive !== undefined ? { isActive: d.isActive } : {}),
       },
     });
+    await writeAdminLog(g.user, "bijouterie.update", { id, article: item.article });
     return NextResponse.json({ item });
   } catch {
     return NextResponse.json({ error: "Не удалось обновить" }, { status: 400 });
@@ -60,6 +62,11 @@ export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string 
   const g = await requireAdminApi();
   if ("error" in g) return g.error;
   const { id } = await ctx.params;
-  await prisma.bijouterieItem.delete({ where: { id } }).catch(() => null);
+  try {
+    await prisma.bijouterieItem.delete({ where: { id } });
+    await writeAdminLog(g.user, "bijouterie.delete", { id });
+  } catch {
+    /* как раньше — не падаем */
+  }
   return NextResponse.json({ ok: true });
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../guard";
 
 export async function GET() {
@@ -50,5 +51,6 @@ export async function POST(req: Request) {
       isPublished: d.isPublished ?? true,
     },
   });
+  await writeAdminLog(g.user, "works.create", { id: work.id, title: work.title });
   return NextResponse.json({ work });
 }

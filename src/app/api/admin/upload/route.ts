@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../guard";
 
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -34,5 +35,6 @@ export async function POST(req: Request) {
   await writeFile(fsPath, buf);
 
   const url = `/uploads/${name}`;
+  await writeAdminLog(g.user, "upload.image", { url });
   return NextResponse.json({ url });
 }

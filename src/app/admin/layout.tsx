@@ -8,6 +8,7 @@ const links = [
   { href: "/admin/works", label: "Работы" },
   { href: "/admin/orders", label: "Заказы" },
   { href: "/admin/settings", label: "Настройки" },
+  { href: "/admin/logs", label: "Журнал" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

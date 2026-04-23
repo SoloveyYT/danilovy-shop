@@ -5,7 +5,11 @@ import { useMemo, useState } from "react";
 import { formatRub } from "@/lib/money";
 import { getImageList } from "@/lib/image-list";
 import { SafeImage } from "@/components/SafeImage";
+import { ProductListFilters } from "@/components/ProductListFilters";
+import { ProductListSort } from "@/components/ProductListSort";
 import { buildCategoryFilterOptions } from "@/lib/product-categories";
+import { matchesPriceRange, matchesProductSearch } from "@/lib/product-list-filter";
+import { rubFromUnknown, sortProductList, type ProductSortMode } from "@/lib/product-sort";
 
 type Item = {
   id: string;
@@ -13,6 +17,7 @@ type Item = {
   title: string;
   category: string;
   basePrice: unknown;
+  createdAt: Date | string;
   imageUrl: string | null;
   imageUrlsJson: string;
 };
@@ -24,33 +29,74 @@ export function CatalogGrid({ items, categoryOptions }: { items: Item[]; categor
   );
 
   const [cat, setCat] = useState("Все");
+  const [sort, setSort] = useState<ProductSortMode>("default");
+  const [search, setSearch] = useState("");
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
 
   const filtered = useMemo(() => {
     if (cat === "Все") return items;
     return items.filter((i) => (i.category || "").trim() === cat);
   }, [items, cat]);
 
+  const narrowed = useMemo(() => {
+    return filtered.filter((i) => {
+      if (!matchesProductSearch(i.title, i.article, search)) return false;
+      const p = rubFromUnknown(i.basePrice);
+      if (!matchesPriceRange(p, priceMin, priceMax)) return false;
+      return true;
+    });
+  }, [filtered, search, priceMin, priceMax]);
+
+  const sorted = useMemo(
+    () => sortProductList(narrowed, sort, (i) => i.basePrice),
+    [narrowed, sort],
+  );
+
   return (
     <>
-      <div className="mt-8 flex flex-wrap gap-2">
-        {categories.map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setCat(c)}
-            className={`rounded-full border px-3 py-1.5 text-sm ${
-              cat === c
-                ? "border-accent bg-accent/10 text-ink"
-                : "border-stone-300 text-muted hover:border-stone-400"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
+      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCat(c)}
+              className={`rounded-full border px-3 py-1.5 text-sm ${
+                cat === c
+                  ? "border-accent bg-accent/10 text-ink"
+                  : "border-stone-300 text-muted hover:border-stone-400"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <ProductListSort id="catalog-sort" value={sort} onChange={setSort} />
       </div>
 
+      <div className="mt-4">
+        <ProductListFilters
+          idPrefix="catalog"
+          search={search}
+          onSearchChange={setSearch}
+          priceMin={priceMin}
+          priceMax={priceMax}
+          onPriceMinChange={setPriceMin}
+          onPriceMaxChange={setPriceMax}
+        />
+      </div>
+
+      {sorted.length === 0 ? (
+        <p className="mt-10 text-center text-muted">
+          {items.length === 0
+            ? "В каталоге пока нет позиций."
+            : "Ничего не найдено — измените поиск или диапазон цены."}
+        </p>
+      ) : null}
+
       <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((item) => {
+        {sorted.map((item) => {
           const imgs = getImageList(item.imageUrlsJson, item.imageUrl);
           const cover = imgs[0];
           return (

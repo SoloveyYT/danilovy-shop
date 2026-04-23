@@ -166,3 +166,15 @@ model Setting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+/// Журнал действий в админ-панели (кто что сделал)
+model AdminLog {
+  id        String   @id @default(cuid())
+  userId    String
+  email     String
+  action    String
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

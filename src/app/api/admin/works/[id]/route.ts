@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { writeAdminLog } from "@/lib/admin-log";
 import { requireAdminApi } from "../../guard";
 
 const patchSchema = z.object({
@@ -43,6 +44,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       ...(d.isPublished !== undefined ? { isPublished: d.isPublished } : {}),
     },
   });
+  await writeAdminLog(g.user, "works.update", { id, title: work.title });
   return NextResponse.json({ work });
 }
 
@@ -50,6 +52,11 @@ export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string 
   const g = await requireAdminApi();
   if ("error" in g) return g.error;
   const { id } = await ctx.params;
-  await prisma.workExample.delete({ where: { id } }).catch(() => null);
+  try {
+    await prisma.workExample.delete({ where: { id } });
+    await writeAdminLog(g.user, "works.delete", { id });
+  } catch {
+    /* как раньше — не падаем */
+  }
   return NextResponse.json({ ok: true });
 }
